@@ -1,6 +1,12 @@
 # ⚡ WinOptimizer Pro — Optimización de RAM, Caché y CPU para Windows 11
 
-Aplicación de escritorio nativa para **Windows 11** construida con **C# y WPF (.NET 10)** que permite monitorear el hardware en tiempo real, liberar memoria RAM inactiva y limpiar cachés del sistema utilizando exclusivamente las APIs oficiales de Windows (`Win32` y `NT Native API`).
+Aplicación de escritorio nativa con **interfaz gráfica (WPF / .NET 10)** en modo oscuro para **Windows 11**, diseñada para monitorear el hardware en tiempo real, liberar memoria RAM inactiva y limpiar cachés del sistema utilizando exclusivamente las APIs oficiales de Windows (`Win32` y `NT Native API`).
+
+## 📦 Instalación Directa (Windows 10 / 11 x64)
+
+Puedes instalar la aplicación directamente ejecutando el instalador incluido en el repositorio (no requiere tener .NET instalado, ya que es autocontenido):
+
+- 👉 **[`Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe`](./Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe)**
 
 ## ✨ Características Principales
 
@@ -19,12 +25,7 @@ Aplicación de escritorio nativa para **Windows 11** construida con **C# y WPF (
 - **Auto-Optimización Inteligente:**
   - Modo opcional para liberar RAM automáticamente cuando el consumo supere el **85%**.
 
-## 🛠️ Requisitos
-
-- **Sistema Operativo:** Windows 10 / Windows 11 (x64 / ARM64)
-- **SDK / Runtime:** [.NET 10.0 SDK](https://dotnet.microsoft.com/)
-
-## 🚀 Compilación y Ejecución
+## 🛠️ Compilación desde el Código Fuente
 
 ```powershell
 # Compilar en modo Release
@@ -34,10 +35,14 @@ dotnet build --configuration Release
 dotnet run --configuration Release
 ```
 
-También puedes ejecutar directamente [`Ejecutar_WinOptimizerPro.bat`](./Ejecutar_WinOptimizerPro.bat).
+- Para ejecutar la app rápidamente: [`Ejecutar_WinOptimizerPro.bat`](./Ejecutar_WinOptimizerPro.bat)
+- Para volver a generar el instalador con **Inno Setup 6**: [`Crear_Instalador.bat`](./Crear_Instalador.bat)
 
 ## 📂 Estructura del Proyecto
 
+- `Assets/app.ico` — Icono de la aplicación y del instalador.
+- `Installer/WinOptimizerPro.iss` — Script de configuración del instalador para Inno Setup 6.
+- `Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe` — Instalador ejecutable autocontenido para Windows (x64).
 - `Services/NativeMethods.cs` — Declaraciones P/Invoke (`psapi.dll`, `kernel32.dll`, `ntdll.dll`, `advapi32.dll`).
 - `Services/SystemMonitorService.cs` — Telemetría de CPU, RAM, caché y procesos en tiempo real.
 - `Services/OptimizerService.cs` — Motor de liberación de RAM, purga de Standby List y limpieza de caché de disco/DNS.

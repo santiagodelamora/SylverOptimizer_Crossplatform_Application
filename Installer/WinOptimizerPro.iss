@@ -1,7 +1,7 @@
 #define MyAppName "WinOptimizer Pro"
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "Santiago De la Mora"
-#define MyAppURL "https://github.com/santiagodelamora/Optimizador_Rendimiento_Windows_Desktop_Application"
+#define MyAppURL "https://github.com/santiagodelamora/WinOptimizer_Desktop_Application"
 #define MyAppExeName "WinOptimizerPro.exe"
 
 [Setup]
