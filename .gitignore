@@ -35,6 +35,7 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 publish/
+Installer/Output/
 
 # NuGet Packages
 *.nupkg
