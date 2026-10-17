@@ -1,0 +1,653 @@
+<Window x:Class="WinOptimizerPro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="WinOptimizer Pro — Optimización de RAM, Caché y CPU para Windows 11"
+        Width="1180" Height="800"
+        MinWidth="980" MinHeight="680"
+        WindowStartupLocation="CenterScreen"
+        Background="#0D1117"
+        Foreground="#E6EDF3"
+        FontFamily="Segoe UI Variable Display, Segoe UI">
+
+    <Window.Resources>
+        <!-- Paleta de colores -->
+        <SolidColorBrush x:Key="CardBgBrush" Color="#161B22"/>
+        <SolidColorBrush x:Key="CardBorderBrush" Color="#262C36"/>
+        <SolidColorBrush x:Key="SubCardBgBrush" Color="#0F141C"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F0F6FC"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#8B949E"/>
+        <SolidColorBrush x:Key="AccentGreenBrush" Color="#00E676"/>
+        <SolidColorBrush x:Key="AccentCyanBrush" Color="#00B0FF"/>
+        <SolidColorBrush x:Key="AccentPurpleBrush" Color="#A371F7"/>
+
+        <!-- Estilo de Botón Principal (Verde AVG Cleaner) -->
+        <Style x:Key="PrimaryActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#00C853"/>
+            <Setter Property="Foreground" Value="#07120B"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="18,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#00E676"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#009624"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#233128"/>
+                                <Setter Property="Foreground" Value="#5C6B61"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo de Botón Secundario Oscuro -->
+        <Style x:Key="SecondaryActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#21262D"/>
+            <Setter Property="Foreground" Value="#E6EDF3"/>
+            <Setter Property="BorderBrush" Value="#30363D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="7"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#29323D"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#00B0FF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1B222B"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo de Botón Cian -->
+        <Style x:Key="CyanActionButton" TargetType="Button" BasedOn="{StaticResource SecondaryActionButton}">
+            <Setter Property="Background" Value="#112A3E"/>
+            <Setter Property="BorderBrush" Value="#0091EA"/>
+            <Setter Property="Foreground" Value="#40C4FF"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20,16,20,16">
+        <Grid.RowDefinitions>
+            <!-- Fila 0: Barra Superior -->
+            <RowDefinition Height="Auto"/>
+            <!-- Fila 1: Banner 1-Clic -->
+            <RowDefinition Height="Auto"/>
+            <!-- Fila 2: Monitores de RAM y CPU en Tiempo Real -->
+            <RowDefinition Height="Auto"/>
+            <!-- Fila 3: Procesos y Registro de Actividad -->
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ================================================================ -->
+        <!-- FILA 0: CABECERA                                                 -->
+        <!-- ================================================================ -->
+        <Grid Grid.Row="0" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Width="38" Height="38" CornerRadius="10" Margin="0,0,12,0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#00E676" Offset="0"/>
+                            <GradientStop Color="#00B0FF" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <TextBlock Text="⚡" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#08130D"/>
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="WinOptimizer Pro" FontSize="20" FontWeight="Bold" Foreground="#F0F6FC"/>
+                    <TextBlock Text="Monitor de Hardware, Liberador de RAM y Limpiador de Caché para Windows 11"
+                               FontSize="12" Foreground="#8B949E"/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Toggle de Auto-Optimización -->
+                <Border Background="#161B22" BorderBrush="#262C36" BorderThickness="1" CornerRadius="8" Padding="12,6" Margin="0,0,10,0">
+                    <CheckBox x:Name="AutoOptimizeCheckBox"
+                              Foreground="#E6EDF3"
+                              FontSize="12"
+                              VerticalContentAlignment="Center"
+                              Content="Auto-liberar RAM (&gt;85%)"
+                              ToolTip="Libera automáticamente los Working Sets inactivos cuando el uso de RAM supera el 85%."/>
+                </Border>
+
+                <!-- Botón / Estado de Administrador -->
+                <Button x:Name="AdminElevateButton"
+                        Style="{StaticResource SecondaryActionButton}"
+                        Click="AdminElevateButton_Click"
+                        Padding="12,7"
+                        Content="🛡️ Elevar a Administrador"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ================================================================ -->
+        <!-- FILA 1: BANNER DE OPTIMIZACIÓN RÁPIDA (1-CLIC)                   -->
+        <!-- ================================================================ -->
+        <Border Grid.Row="1"
+                CornerRadius="12"
+                BorderBrush="#263545"
+                BorderThickness="1"
+                Padding="20,14"
+                Margin="0,0,0,14">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#13222E" Offset="0"/>
+                    <GradientStop Color="#161B22" Offset="0.55"/>
+                    <GradientStop Color="#122723" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse x:Name="HealthStatusDot" Width="10" Height="10" Fill="#00E676" Margin="0,0,8,0"/>
+                        <TextBlock x:Name="HealthStatusTitle"
+                                   Text="Estado del Sistema: Analizando..."
+                                   FontSize="15" FontWeight="Bold" Foreground="#F0F6FC"/>
+                    </StackPanel>
+                    <TextBlock x:Name="LastActionBannerText"
+                               Text="Listo para liberar memoria RAM inactiva, purgar Standby List y limpiar caché temporal de Windows 11."
+                               FontSize="12.5" Foreground="#9BA7B4" Margin="0,4,16,0" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+
+                <!-- Estadística acumulada de sesión: RAM -->
+                <Border Grid.Column="1" Background="#0D1117" BorderBrush="#232B35" BorderThickness="1"
+                        CornerRadius="8" Padding="14,6" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <StackPanel>
+                        <TextBlock Text="RAM LIBERADA (SESIÓN)" FontSize="10" FontWeight="Bold" Foreground="#8B949E"/>
+                        <TextBlock x:Name="SessionRamFreedText" Text="0.0 MB" FontSize="15" FontWeight="Bold" Foreground="#00E676"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Estadística acumulada de sesión: Caché Disco -->
+                <Border Grid.Column="2" Background="#0D1117" BorderBrush="#232B35" BorderThickness="1"
+                        CornerRadius="8" Padding="14,6" Margin="0,0,16,0" VerticalAlignment="Center">
+                    <StackPanel>
+                        <TextBlock Text="CACHÉ LIMPIADA (SESIÓN)" FontSize="10" FontWeight="Bold" Foreground="#8B949E"/>
+                        <TextBlock x:Name="SessionCacheCleanedText" Text="0.0 MB" FontSize="15" FontWeight="Bold" Foreground="#00B0FF"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Botón 1-Clic -->
+                <Button Grid.Column="3"
+                        x:Name="OneClickOptimizeButton"
+                        Style="{StaticResource PrimaryActionButton}"
+                        Click="OneClickOptimizeButton_Click"
+                        Padding="22,12"
+                        FontSize="13.5"
+                        Content="🚀 OPTIMIZAR TODO (1-CLIC)"/>
+            </Grid>
+        </Border>
+
+        <!-- ================================================================ -->
+        <!-- FILA 2: MONITORES EN TIEMPO REAL (RAM & CPU)                     -->
+        <!-- ================================================================ -->
+        <Grid Grid.Row="2" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="14"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ==================== TARJETA DE MEMORIA RAM ==================== -->
+            <Border Grid.Column="0"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="18,14">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Cabecera RAM -->
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="MEMORIA RAM FÍSICA &amp; CACHÉ" FontSize="12" FontWeight="Bold" Foreground="#8B949E"/>
+                        </StackPanel>
+                        <TextBlock x:Name="RamTotalHeaderLabel"
+                                   Text="0.0 GB Totales"
+                                   HorizontalAlignment="Right"
+                                   FontSize="12" FontWeight="SemiBold" Foreground="#00E676"/>
+                    </Grid>
+
+                    <!-- Medidor Circular + Gráfico en Tiempo Real -->
+                    <Grid Grid.Row="1" Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="138"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Medidor Circular RAM -->
+                        <Grid Width="126" Height="126" HorizontalAlignment="Left">
+                            <Ellipse Width="116" Height="116" Stroke="#21262D" StrokeThickness="10"/>
+                            <Path x:Name="RamGaugeArc"
+                                  Stroke="#00E676"
+                                  StrokeThickness="10"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"/>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock x:Name="RamPercentText"
+                                           Text="0%"
+                                           FontSize="25" FontWeight="Bold"
+                                           Foreground="#F0F6FC"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="RamUsedShortText"
+                                           Text="0.0 / 0.0 GB"
+                                           FontSize="10.5"
+                                           Foreground="#8B949E"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Gráfico Histórico de 60s de RAM -->
+                        <Border Grid.Column="1"
+                                Background="{StaticResource SubCardBgBrush}"
+                                BorderBrush="#21262D"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="8"
+                                Height="120">
+                            <Grid>
+                                <TextBlock Text="Historial RAM (60s)" FontSize="10.5" Foreground="#6E7681"
+                                           VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                <Canvas x:Name="RamChartCanvas" ClipToBounds="True" Margin="0,16,0,0" SizeChanged="RamChartCanvas_SizeChanged">
+                                    <Polygon x:Name="RamAreaPolygon" Fill="#2800E676"/>
+                                    <Polyline x:Name="RamLinePolyline" Stroke="#00E676" StrokeThickness="2"/>
+                                </Canvas>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- Cuadrícula de Detalles de Memoria -->
+                    <UniformGrid Grid.Row="2" Columns="4" Margin="0,0,0,12">
+                        <Border Background="{StaticResource SubCardBgBrush}" CornerRadius="7" Padding="9,6" Margin="0,0,6,0">
+                            <StackPanel>
+                                <TextBlock Text="En Uso" FontSize="10.5" Foreground="#8B949E"/>
+                                <TextBlock x:Name="RamUsedDetailText" Text="0.00 GB" FontSize="13.5" FontWeight="Bold" Foreground="#F0F6FC"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{StaticResource SubCardBgBrush}" CornerRadius="7" Padding="9,6" Margin="3,0,3,0">
+                            <StackPanel>
+                                <TextBlock Text="Disponible" FontSize="10.5" Foreground="#8B949E"/>
+                                <TextBlock x:Name="RamAvailableDetailText" Text="0.00 GB" FontSize="13.5" FontWeight="Bold" Foreground="#00E676"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{StaticResource SubCardBgBrush}" CornerRadius="7" Padding="9,6" Margin="3,0,3,0">
+                            <StackPanel>
+                                <TextBlock Text="Caché / Standby" FontSize="10.5" Foreground="#8B949E"/>
+                                <TextBlock x:Name="RamCacheDetailText" Text="0.00 GB" FontSize="13.5" FontWeight="Bold" Foreground="#00B0FF"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{StaticResource SubCardBgBrush}" CornerRadius="7" Padding="9,6" Margin="6,0,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Commit (Pag.)" FontSize="10.5" Foreground="#8B949E"/>
+                                <TextBlock x:Name="RamCommitDetailText" Text="0.0 / 0.0 GB" FontSize="13.5" FontWeight="Bold" Foreground="#D2A8FF"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+
+                    <!-- Botones de Acción de Memoria -->
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                x:Name="ReleaseRamButton"
+                                Style="{StaticResource CyanActionButton}"
+                                Click="ReleaseRamButton_Click"
+                                ToolTip="Recorta los Working Sets inactivos de todos los procesos abiertos mediante EmptyWorkingSet."
+                                Content="🧹 Liberar RAM (Working Sets)"/>
+
+                        <Button Grid.Column="2"
+                                x:Name="PurgeStandbyButton"
+                                Style="{StaticResource SecondaryActionButton}"
+                                Click="PurgeStandbyButton_Click"
+                                ToolTip="Vacía la lista de espera (Standby List) del kernel de Windows 11 mediante NtSetSystemInformation."
+                                Content="⚡ Purgar Caché RAM (Standby)"/>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- ==================== TARJETA DE CPU & CACHÉ SISTEMA ==================== -->
+            <Border Grid.Column="2"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="18,14">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Cabecera CPU -->
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <TextBlock Text="USO DE PROCESADOR (CPU) &amp; CACHÉ DEL SISTEMA" FontSize="12" FontWeight="Bold" Foreground="#8B949E"/>
+                        <TextBlock x:Name="CpuModelHeaderLabel"
+                                   Text="CPU"
+                                   HorizontalAlignment="Right"
+                                   MaxWidth="270"
+                                   TextTrimming="CharacterEllipsis"
+                                   FontSize="11.5" FontWeight="SemiBold" Foreground="#00B0FF"/>
+                    </Grid>
+
+                    <!-- Medidor Circular CPU + Gráfico en Tiempo Real -->
+                    <Grid Grid.Row="1" Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="138"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Medidor Circular CPU -->
+                        <Grid Width="126" Height="126" HorizontalAlignment="Left">
+                            <Ellipse Width="116" Height="116" Stroke="#21262D" StrokeThickness="10"/>
+                            <Path x:Name="CpuGaugeArc"
+                                  Stroke="#00B0FF"
+                                  StrokeThickness="10"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"/>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock x:Name="CpuPercentText"
+                                           Text="0%"
+                                           FontSize="25" FontWeight="Bold"
+                                           Foreground="#F0F6FC"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="CpuCoresShortText"
+                                           Text="0 Núcleos"
+                                           FontSize="10.5"
+                                           Foreground="#8B949E"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Gráfico Histórico de 60s de CPU -->
+                        <Border Grid.Column="1"
+                                Background="{StaticResource SubCardBgBrush}"
+                                BorderBrush="#21262D"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="8"
+                                Height="120">
+                            <Grid>
+                                <TextBlock Text="Historial CPU (60s)" FontSize="10.5" Foreground="#6E7681"
+                                           VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                <Canvas x:Name="CpuChartCanvas" ClipToBounds="True" Margin="0,16,0,0" SizeChanged="CpuChartCanvas_SizeChanged">
+                                    <Polygon x:Name="CpuAreaPolygon" Fill="#2800B0FF"/>
+                                    <Polyline x:Name="CpuLinePolyline" Stroke="#00B0FF" StrokeThickness="2"/>
+                                </Canvas>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- Cuadrícula de Detalles de CPU y Caché de Disco -->
+                    <UniformGrid Grid.Row="2" Columns="4" Margin="0,0,0,12">
+                        <Border Background="{StaticResource SubCardBgBrush}" CornerRadius="7" Padding="9,6" Margin="0,0,6,0">
+                            <StackPanel>
+                                <TextBlock Text="Procesos" FontSize="10.5" Foreground="#8B949E"/>
+                                <TextBlock x:Name="CpuProcessesText" Text="0" FontSize="13.5" FontWeight="Bold" Foreground="#F0F6FC"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{StaticResource SubCardBgBrush}" CornerRadius="7" Padding="9,6" Margin="3,0,3,0">
+                            <StackPanel>
+                                <TextBlock Text="Hilos (Threads)" FontSize="10.5" Foreground="#8B949E"/>
+                                <TextBlock x:Name="CpuThreadsText" Text="0" FontSize="13.5" FontWeight="Bold" Foreground="#00B0FF"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{StaticResource SubCardBgBrush}" CornerRadius="7" Padding="9,6" Margin="3,0,3,0">
+                            <StackPanel>
+                                <TextBlock Text="Handles" FontSize="10.5" Foreground="#8B949E"/>
+                                <TextBlock x:Name="CpuHandlesText" Text="0" FontSize="13.5" FontWeight="Bold" Foreground="#F0F6FC"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{StaticResource SubCardBgBrush}" CornerRadius="7" Padding="9,6" Margin="6,0,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Caché Temp/Pref." FontSize="10.5" Foreground="#8B949E"/>
+                                <TextBlock x:Name="DiskCacheSizeText" Text="Calculando..." FontSize="13.5" FontWeight="Bold" Foreground="#FFB300"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+
+                    <!-- Botones de Limpieza de Caché del Sistema -->
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                x:Name="ScanDiskCacheButton"
+                                Style="{StaticResource SecondaryActionButton}"
+                                Click="ScanDiskCacheButton_Click"
+                                ToolTip="Analiza cuánto espacio ocupan los archivos temporales (%TEMP%, Windows\Temp, Prefetch y Thumbcache)."
+                                Content="🔍 Analizar Caché"/>
+
+                        <Button Grid.Column="2"
+                                x:Name="CleanDiskCacheButton"
+                                Style="{StaticResource CyanActionButton}"
+                                Click="CleanDiskCacheButton_Click"
+                                ToolTip="Elimina archivos temporales huérfanos (%TEMP%, Windows\Temp, Prefetch) y vacía la caché DNS (ipconfig /flushdns)."
+                                Content="🗑️ Limpiar Caché Temporal + Prefetch + DNS"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ================================================================ -->
+        <!-- FILA 3: TOP PROCESOS Y REGISTRO DE ACTIVIDAD                     -->
+        <!-- ================================================================ -->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.15*"/>
+                <ColumnDefinition Width="14"/>
+                <ColumnDefinition Width="0.85*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Panel Izquierdo: Top Procesos que más RAM consumen -->
+            <Border Grid.Column="0"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16,12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="PROCESOS CON MAYOR USO DE RAM" FontSize="12" FontWeight="Bold" Foreground="#8B949E"/>
+                            <TextBlock Text=" (clic en 'Liberar' para optimizar un proceso individual)"
+                                       FontSize="11" Foreground="#6E7681" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Button x:Name="RefreshProcessesButton"
+                                Style="{StaticResource SecondaryActionButton}"
+                                Click="RefreshProcessesButton_Click"
+                                HorizontalAlignment="Right"
+                                Padding="10,4"
+                                FontSize="11.5"
+                                Content="🔄 Actualizar"/>
+                    </Grid>
+
+                    <ListBox x:Name="TopProcessesListBox"
+                             Grid.Row="1"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="Padding" Value="0,2"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#0F141C"
+                                        BorderBrush="#21262D"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        Padding="12,6"
+                                        Margin="0,0,0,5">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="75"/>
+                                            <ColumnDefinition Width="95"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding Name}"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#E6EDF3"
+                                                   VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis"/>
+
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Pid, StringFormat='PID: {0}'}"
+                                                   FontSize="11.5"
+                                                   Foreground="#8B949E"
+                                                   VerticalAlignment="Center"/>
+
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding FormattedRam}"
+                                                   FontWeight="Bold"
+                                                   Foreground="#00E676"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="0,0,12,0"
+                                                   VerticalAlignment="Center"/>
+
+                                        <Button Grid.Column="3"
+                                                Style="{StaticResource SecondaryActionButton}"
+                                                Padding="10,3"
+                                                FontSize="11"
+                                                Tag="{Binding}"
+                                                Click="TrimSingleProcessButton_Click"
+                                                Content="Liberar"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <!-- Panel Derecho: Registro de Actividad en Tiempo Real -->
+            <Border Grid.Column="2"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16,12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <TextBlock Text="REGISTRO DE OPTIMIZACIÓN Y EVENTOS"
+                                   FontSize="12" FontWeight="Bold" Foreground="#8B949E"
+                                   VerticalAlignment="Center"/>
+                        <Button x:Name="ClearLogButton"
+                                Style="{StaticResource SecondaryActionButton}"
+                                Click="ClearLogButton_Click"
+                                HorizontalAlignment="Right"
+                                Padding="10,4"
+                                FontSize="11.5"
+                                Content="Limpiar Log"/>
+                    </Grid>
+
+                    <ListBox x:Name="ActivityLogListBox"
+                             Grid.Row="1"
+                             Background="#0A0E14"
+                             BorderBrush="#21262D"
+                             BorderThickness="1"
+                             Padding="6"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"
+                                           TextWrapping="Wrap"
+                                           FontFamily="Cascadia Code, Consolas, Segoe UI"
+                                           FontSize="11.5"
+                                           Foreground="#B1BAC4"
+                                           Margin="2,3"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
