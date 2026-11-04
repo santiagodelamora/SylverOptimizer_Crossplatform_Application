@@ -25,7 +25,10 @@ You can install the application directly using the self-contained installer incl
   - Scans and removes orphaned temporary files across `%TEMP%`, `C:\Windows\Temp`, `C:\Windows\Prefetch`, and inactive Explorer thumbnail caches (`thumbcache_*.db`).
   - Flushes the Windows DNS resolver cache (`ipconfig /flushdns`).
 - **Smart Auto-Optimization:**
-  - Optional background toggle that automatically trims inactive RAM working sets when memory usage exceeds **85%**.
+  - Optional background toggle that automatically trims inactive RAM working sets when memory usage exceeds a configurable threshold (**65% – 95%**, **85%** by default).
+- **Settings Section & Customizable Color Themes:**
+  - Real-time visual theme switcher featuring **6 color palettes**: *Emerald Cyber*, *Arctic Ocean*, *Amethyst Neon*, *Crimson Gaming*, *Solar Amber*, and *Crystal Light Mode*.
+  - Persistent preferences for telemetry refresh rate (`0.5s`, `1.0s`, `2.0s`), DNS flushing, and Standby List purging automatically saved in `%LocalAppData%\WinOptimizerPro\settings.json`.
 
 ## 🛠️ Building from Source
 
@@ -48,4 +51,5 @@ dotnet run --configuration Release
 - `Services/NativeMethods.cs` — P/Invoke declarations (`psapi.dll`, `kernel32.dll`, `ntdll.dll`, `advapi32.dll`).
 - `Services/SystemMonitorService.cs` — Real-time CPU, RAM, cache, and top process telemetry service.
 - `Services/OptimizerService.cs` — RAM working set trimmer, Standby List cleaner, and disk/DNS cache cleaner.
-- `MainWindow.xaml` / `MainWindow.xaml.cs` — Dark-themed WPF GUI with real-time gauges and charts.
+- `Services/AppSettingsService.cs` — Dynamic color theme engine and JSON configuration persistence service.
+- `MainWindow.xaml` / `MainWindow.xaml.cs` — Themeable WPF GUI with real-time gauges, charts, and settings panel.

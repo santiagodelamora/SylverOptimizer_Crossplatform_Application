@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -17,6 +18,7 @@ public partial class MainWindow : Window
 
     private readonly SystemMonitorService _monitorService;
     private readonly OptimizerService _optimizerService;
+    private readonly AppSettingsService _settingsService;
     private readonly DispatcherTimer _telemetryTimer;
 
     private readonly List<double> _ramHistory = new(HistoryMaxPoints);
@@ -27,10 +29,11 @@ public partial class MainWindow : Window
     private double _sessionCleanedCacheMb;
     private int _tickCount;
     private bool _isBusyOptimizing;
+    private bool _isSyncingSettingsUi;
     private DateTime _lastAutoOptimizeUtc = DateTime.MinValue;
 
-    private static readonly SolidColorBrush BrushOptimal = new(Color.FromRgb(0x00, 0xE6, 0x76));
-    private static readonly SolidColorBrush BrushCyan = new(Color.FromRgb(0x00, 0xB0, 0xFF));
+    private SolidColorBrush _currentAccentPrimaryBrush = new(Color.FromRgb(0x00, 0xE6, 0x76));
+    private SolidColorBrush _currentAccentSecondaryBrush = new(Color.FromRgb(0x00, 0xB0, 0xFF));
     private static readonly SolidColorBrush BrushWarning = new(Color.FromRgb(0xFF, 0xB3, 0x00));
     private static readonly SolidColorBrush BrushCritical = new(Color.FromRgb(0xFF, 0x52, 0x52));
 
@@ -40,6 +43,7 @@ public partial class MainWindow : Window
 
         _monitorService = new SystemMonitorService();
         _optimizerService = new OptimizerService();
+        _settingsService = new AppSettingsService();
 
         ActivityLogListBox.ItemsSource = _activityLog;
 
@@ -50,20 +54,22 @@ public partial class MainWindow : Window
             _cpuHistory.Add(0);
         }
 
-        ConfigureHeaderAndPrivilegeState();
-
         _telemetryTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromSeconds(1)
+            Interval = TimeSpan.FromMilliseconds(_settingsService.Current.TelemetryIntervalMs)
         };
         _telemetryTimer.Tick += TelemetryTimer_Tick;
+
+        LoadAndApplySettingsToUi(logTheme: false);
+        ConfigureHeaderAndPrivilegeState();
 
         Loaded += MainWindow_Loaded;
     }
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
-        AddLog("Aplicación iniciada. Monitoreando RAM y CPU mediante Win32 API (GlobalMemoryStatusEx / GetSystemTimes).");
+        var activeTheme = _settingsService.GetThemeById(_settingsService.Current.ThemeId);
+        AddLog($"Aplicación iniciada con el tema '{activeTheme.Name}'. Monitoreando RAM y CPU mediante Win32 API.");
 
         if (_optimizerService.IsRunningAsAdmin)
         {
@@ -92,7 +98,7 @@ public partial class MainWindow : Window
         {
             AdminElevateButton.Content = "⚡ Modo Administrador Activo";
             AdminElevateButton.IsEnabled = false;
-            AdminElevateButton.Foreground = BrushOptimal;
+            AdminElevateButton.Foreground = _currentAccentPrimaryBrush;
         }
         else
         {
@@ -101,25 +107,335 @@ public partial class MainWindow : Window
         }
     }
 
+    // =========================================================================
+    // NAVEGACIÓN Y SISTEMA DE TEMAS / CONFIGURACIÓN
+    // =========================================================================
+
+    private void NavDashboardButton_Click(object sender, RoutedEventArgs e)
+    {
+        SwitchMainView(showSettings: false);
+    }
+
+    private void NavSettingsButton_Click(object sender, RoutedEventArgs e)
+    {
+        SwitchMainView(showSettings: true);
+    }
+
+    private void SwitchMainView(bool showSettings)
+    {
+        DashboardViewGrid.Visibility = showSettings ? Visibility.Collapsed : Visibility.Visible;
+        SettingsViewScrollViewer.Visibility = showSettings ? Visibility.Visible : Visibility.Collapsed;
+
+        var activeStyle = (Style)FindResource("CyanActionButton");
+        var inactiveStyle = (Style)FindResource("SecondaryActionButton");
+
+        NavDashboardButton.Style = showSettings ? inactiveStyle : activeStyle;
+        NavSettingsButton.Style = showSettings ? activeStyle : inactiveStyle;
+    }
+
+    private void LoadAndApplySettingsToUi(bool logTheme)
+    {
+        _isSyncingSettingsUi = true;
+        try
+        {
+            var cfg = _settingsService.Current;
+
+            ApplyColorTheme(cfg.ThemeId, logChange: logTheme);
+
+            AutoOptimizeCheckBox.IsChecked = cfg.AutoOptimizeEnabled;
+            SettingsAutoOptimizeCheckBox.IsChecked = cfg.AutoOptimizeEnabled;
+
+            AutoThresholdSlider.Value = cfg.AutoOptimizeThresholdPercent;
+            UpdateAutoThresholdLabels(cfg.AutoOptimizeThresholdPercent);
+
+            FlushDnsOnCleanCheckBox.IsChecked = cfg.FlushDnsOnClean;
+            PurgeStandbyOnOneClickCheckBox.IsChecked = cfg.PurgeStandbyOnOneClick;
+
+            UpdateCleanDiskButtonLabel(cfg.FlushDnsOnClean);
+            UpdateTelemetryIntervalButtons(cfg.TelemetryIntervalMs);
+
+            if (_telemetryTimer != null)
+            {
+                _telemetryTimer.Interval = TimeSpan.FromMilliseconds(cfg.TelemetryIntervalMs);
+            }
+        }
+        finally
+        {
+            _isSyncingSettingsUi = false;
+        }
+    }
+
+    private void ApplyColorTheme(string themeId, bool logChange)
+    {
+        var theme = _settingsService.GetThemeById(themeId);
+        _settingsService.Current.ThemeId = theme.Id;
+
+        _currentAccentPrimaryBrush = new SolidColorBrush(theme.AccentPrimary);
+        _currentAccentSecondaryBrush = new SolidColorBrush(theme.AccentSecondary);
+
+        Resources["WindowBgBrush"] = new SolidColorBrush(theme.WindowBg);
+        Resources["CardBgBrush"] = new SolidColorBrush(theme.CardBg);
+        Resources["CardBorderBrush"] = new SolidColorBrush(theme.CardBorder);
+        Resources["SubCardBgBrush"] = new SolidColorBrush(theme.SubCardBg);
+        Resources["SubCardBorderBrush"] = new SolidColorBrush(theme.SubCardBorder);
+        Resources["LogBgBrush"] = new SolidColorBrush(theme.LogBg);
+        Resources["TextPrimaryBrush"] = new SolidColorBrush(theme.TextPrimary);
+        Resources["TextSecondaryBrush"] = new SolidColorBrush(theme.TextSecondary);
+        Resources["TextMutedBrush"] = new SolidColorBrush(theme.TextMuted);
+
+        Resources["AccentGreenBrush"] = _currentAccentPrimaryBrush;
+        Resources["AccentPrimaryButtonBgBrush"] = new SolidColorBrush(theme.AccentPrimaryButtonBg);
+        Resources["AccentPrimaryButtonFgBrush"] = new SolidColorBrush(theme.AccentPrimaryButtonFg);
+
+        Resources["AccentCyanBrush"] = _currentAccentSecondaryBrush;
+        Resources["AccentSecondaryBgBrush"] = new SolidColorBrush(theme.AccentSecondaryBg);
+        Resources["AccentSecondaryBorderBrush"] = new SolidColorBrush(theme.AccentSecondaryBorder);
+        Resources["AccentSecondaryFgBrush"] = new SolidColorBrush(theme.AccentSecondaryFg);
+
+        Resources["AccentPurpleBrush"] = new SolidColorBrush(theme.AccentTertiary);
+
+        Resources["SecondaryButtonBgBrush"] = new SolidColorBrush(theme.SecondaryButtonBg);
+        Resources["SecondaryButtonHoverBgBrush"] = new SolidColorBrush(theme.SecondaryButtonHoverBg);
+        Resources["SecondaryButtonBorderBrush"] = new SolidColorBrush(theme.SecondaryButtonBorder);
+
+        Resources["BannerBorderBrush"] = new SolidColorBrush(theme.BannerBorder);
+        Resources["RamChartAreaBrush"] = new SolidColorBrush(Color.FromArgb(0x2E, theme.AccentPrimary.R, theme.AccentPrimary.G, theme.AccentPrimary.B));
+        Resources["CpuChartAreaBrush"] = new SolidColorBrush(Color.FromArgb(0x2E, theme.AccentSecondary.R, theme.AccentSecondary.G, theme.AccentSecondary.B));
+
+        var logoGrad = new LinearGradientBrush
+        {
+            StartPoint = new Point(0, 0),
+            EndPoint = new Point(1, 1)
+        };
+        logoGrad.GradientStops.Add(new GradientStop(theme.AccentPrimary, 0.0));
+        logoGrad.GradientStops.Add(new GradientStop(theme.AccentSecondary, 1.0));
+        Resources["LogoGradientBrush"] = logoGrad;
+
+        var bannerGrad = new LinearGradientBrush
+        {
+            StartPoint = new Point(0, 0),
+            EndPoint = new Point(1, 0)
+        };
+        bannerGrad.GradientStops.Add(new GradientStop(theme.BannerGradStart, 0.0));
+        bannerGrad.GradientStops.Add(new GradientStop(theme.BannerGradMid, 0.55));
+        bannerGrad.GradientStops.Add(new GradientStop(theme.BannerGradEnd, 1.0));
+        Resources["BannerGradientBrush"] = bannerGrad;
+
+        ActiveThemeHeaderBadge.Text = $"🎨 {theme.Name}";
+        SelectedThemeSummaryText.Text = $"Tema activo: {theme.Name}";
+
+        if (_optimizerService.IsRunningAsAdmin)
+        {
+            AdminElevateButton.Foreground = _currentAccentPrimaryBrush;
+        }
+
+        RefreshThemeCards(theme.Id);
+
+        if (IsLoaded)
+        {
+            UpdateTelemetryUi();
+        }
+
+        if (logChange)
+        {
+            _settingsService.SaveSettings();
+            AddLog($"[Configuración] Tema de color cambiado a '{theme.Name}' ({theme.BadgeText}).");
+            LastActionBannerText.Text = $"🎨 Tema visual actualizado a '{theme.Name}'.";
+        }
+    }
+
+    private void RefreshThemeCards(string selectedId)
+    {
+        var cards = new List<ThemeCardItem>(_settingsService.Themes.Count);
+        foreach (var theme in _settingsService.Themes)
+        {
+            bool isSelected = string.Equals(theme.Id, selectedId, StringComparison.OrdinalIgnoreCase);
+            cards.Add(new ThemeCardItem(theme, isSelected));
+        }
+
+        ThemesItemsControl.ItemsSource = cards;
+    }
+
+    private void ThemeCard_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: string themeId })
+        {
+            ApplyColorTheme(themeId, logChange: true);
+        }
+    }
+
+    private void SelectThemeButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: string themeId })
+        {
+            ApplyColorTheme(themeId, logChange: true);
+            e.Handled = true;
+        }
+    }
+
+    private void AutoOptimizeCheckBox_Changed(object sender, RoutedEventArgs e)
+    {
+        if (_isSyncingSettingsUi)
+        {
+            return;
+        }
+
+        _isSyncingSettingsUi = true;
+        try
+        {
+            bool enabled = AutoOptimizeCheckBox.IsChecked == true;
+            SettingsAutoOptimizeCheckBox.IsChecked = enabled;
+            _settingsService.Current.AutoOptimizeEnabled = enabled;
+            _settingsService.SaveSettings();
+
+            AddLog(enabled
+                ? $"[Configuración] Auto-optimización de RAM activada (umbral >{_settingsService.Current.AutoOptimizeThresholdPercent}%)."
+                : "[Configuración] Auto-optimización de RAM desactivada.");
+        }
+        finally
+        {
+            _isSyncingSettingsUi = false;
+        }
+    }
+
+    private void SettingsAutoOptimizeCheckBox_Changed(object sender, RoutedEventArgs e)
+    {
+        if (_isSyncingSettingsUi)
+        {
+            return;
+        }
+
+        _isSyncingSettingsUi = true;
+        try
+        {
+            bool enabled = SettingsAutoOptimizeCheckBox.IsChecked == true;
+            AutoOptimizeCheckBox.IsChecked = enabled;
+            _settingsService.Current.AutoOptimizeEnabled = enabled;
+            _settingsService.SaveSettings();
+
+            AddLog(enabled
+                ? $"[Configuración] Auto-optimización de RAM activada (umbral >{_settingsService.Current.AutoOptimizeThresholdPercent}%)."
+                : "[Configuración] Auto-optimización de RAM desactivada.");
+        }
+        finally
+        {
+            _isSyncingSettingsUi = false;
+        }
+    }
+
+    private void AutoThresholdSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (!IsLoaded && _isSyncingSettingsUi)
+        {
+            return;
+        }
+
+        int threshold = (int)Math.Round(e.NewValue);
+        UpdateAutoThresholdLabels(threshold);
+
+        if (!_isSyncingSettingsUi && _settingsService != null)
+        {
+            _settingsService.Current.AutoOptimizeThresholdPercent = threshold;
+            _settingsService.SaveSettings();
+        }
+    }
+
+    private void UpdateAutoThresholdLabels(int threshold)
+    {
+        if (AutoThresholdValueText != null)
+        {
+            AutoThresholdValueText.Text = $"{threshold}%";
+        }
+
+        if (AutoOptimizeCheckBox != null)
+        {
+            AutoOptimizeCheckBox.Content = $"Auto-liberar RAM (>{threshold}%)";
+        }
+    }
+
+    private void CleaningOptionsCheckBox_Changed(object sender, RoutedEventArgs e)
+    {
+        if (_isSyncingSettingsUi || _settingsService == null)
+        {
+            return;
+        }
+
+        bool flushDns = FlushDnsOnCleanCheckBox.IsChecked == true;
+        bool purgeStandby = PurgeStandbyOnOneClickCheckBox.IsChecked == true;
+
+        _settingsService.Current.FlushDnsOnClean = flushDns;
+        _settingsService.Current.PurgeStandbyOnOneClick = purgeStandby;
+        _settingsService.SaveSettings();
+
+        UpdateCleanDiskButtonLabel(flushDns);
+    }
+
+    private void UpdateCleanDiskButtonLabel(bool flushDns)
+    {
+        if (CleanDiskCacheButton != null)
+        {
+            CleanDiskCacheButton.Content = flushDns
+                ? "🗑️ Limpiar Caché Temporal + Prefetch + DNS"
+                : "🗑️ Limpiar Caché Temporal + Prefetch";
+        }
+    }
+
+    private void TelemetryIntervalButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: string tagStr } && int.TryParse(tagStr, out int intervalMs))
+        {
+            _settingsService.Current.TelemetryIntervalMs = intervalMs;
+            _settingsService.SaveSettings();
+
+            _telemetryTimer.Interval = TimeSpan.FromMilliseconds(intervalMs);
+            UpdateTelemetryIntervalButtons(intervalMs);
+
+            AddLog($"[Configuración] Intervalo de actualización del monitor ajustado a {intervalMs / 1000.0:N1}s.");
+        }
+    }
+
+    private void UpdateTelemetryIntervalButtons(int intervalMs)
+    {
+        var activeStyle = (Style)FindResource("CyanActionButton");
+        var inactiveStyle = (Style)FindResource("SecondaryActionButton");
+
+        IntervalFastButton.Style = intervalMs == 500 ? activeStyle : inactiveStyle;
+        IntervalNormalButton.Style = intervalMs == 1000 ? activeStyle : inactiveStyle;
+        IntervalEcoButton.Style = intervalMs == 2000 ? activeStyle : inactiveStyle;
+    }
+
+    private void ResetSettingsButton_Click(object sender, RoutedEventArgs e)
+    {
+        _settingsService.ResetToDefaults();
+        LoadAndApplySettingsToUi(logTheme: true);
+        AddLog("[Configuración] Se han restaurado todos los ajustes y el tema predeterminado (Esmeralda Cyber).");
+    }
+
+    // =========================================================================
+    // TELEMETRÍA Y GRÁFICOS EN TIEMPO REAL
+    // =========================================================================
+
     private async void TelemetryTimer_Tick(object? sender, EventArgs e)
     {
         _tickCount++;
         var snapshot = UpdateTelemetryUi();
 
-        // Actualizar lista de procesos cada 4 segundos
+        // Actualizar lista de procesos cada 4 ciclos
         if (_tickCount % 4 == 0 && !_isBusyOptimizing)
         {
             await RefreshTopProcessesAsync();
         }
 
-        // Auto-optimización inteligente si supera el 85% y tiene cooldown de 60s
+        int threshold = _settingsService.Current.AutoOptimizeThresholdPercent;
+
+        // Auto-optimización inteligente si supera el umbral configurado y tiene cooldown de 60s
         if (AutoOptimizeCheckBox.IsChecked == true &&
             !_isBusyOptimizing &&
-            snapshot.RamUsagePercent >= 85.0 &&
+            snapshot.RamUsagePercent >= threshold &&
             (DateTime.UtcNow - _lastAutoOptimizeUtc).TotalSeconds >= 60)
         {
             _lastAutoOptimizeUtc = DateTime.UtcNow;
-            AddLog($"[Auto-Optimización] Uso de RAM alto ({snapshot.RamUsagePercent:N1}%). Liberando Working Sets inactivos...");
+            AddLog($"[Auto-Optimización] Uso de RAM alto ({snapshot.RamUsagePercent:N1}% >= {threshold}%). Liberando Working Sets inactivos...");
             await ExecuteReleaseRamAsync();
         }
     }
@@ -143,7 +459,7 @@ public partial class MainWindow : Window
         CpuThreadsText.Text = snap.ThreadCount.ToString("N0");
         CpuHandlesText.Text = snap.HandleCount.ToString("N0");
 
-        // Actualizar colores y medidores circulares
+        // Actualizar colores y medidores circulares según el tema activo
         var ramBrush = GetLoadBrush(snap.RamUsagePercent, isCpu: false);
         var cpuBrush = GetLoadBrush(snap.CpuUsagePercent, isCpu: true);
 
@@ -166,7 +482,7 @@ public partial class MainWindow : Window
         return snap;
     }
 
-    private static SolidColorBrush GetLoadBrush(double percent, bool isCpu)
+    private SolidColorBrush GetLoadBrush(double percent, bool isCpu)
     {
         if (percent >= 85.0)
         {
@@ -178,7 +494,7 @@ public partial class MainWindow : Window
             return BrushWarning;
         }
 
-        return isCpu ? BrushCyan : BrushOptimal;
+        return isCpu ? _currentAccentSecondaryBrush : _currentAccentPrimaryBrush;
     }
 
     private void UpdateSystemHealthIndicator(double ramPercent, double cpuPercent)
@@ -195,7 +511,7 @@ public partial class MainWindow : Window
         }
         else
         {
-            HealthStatusDot.Fill = BrushOptimal;
+            HealthStatusDot.Fill = _currentAccentPrimaryBrush;
             HealthStatusTitle.Text = $"Estado del Sistema: Rendimiento Óptimo (RAM {ramPercent:N0}% • CPU {cpuPercent:N0}%)";
         }
     }
@@ -328,7 +644,7 @@ public partial class MainWindow : Window
     }
 
     // =========================================================================
-    // ACCIONES DE USUARIO (BOTONES)
+    // ACCIONES DE USUARIO (BOTONES DE OPTIMIZACIÓN)
     // =========================================================================
 
     private async void OneClickOptimizeButton_Click(object sender, RoutedEventArgs e)
@@ -346,9 +662,9 @@ public partial class MainWindow : Window
             _sessionFreedRamMb += ramResult.FreedRamMb;
             AddLog(ramResult.SummaryMessage);
 
-            // 2. Purgar Standby List si es Administrador
+            // 2. Purgar Standby List si es Administrador y está habilitado en Configuración
             double standbyMb = 0;
-            if (_optimizerService.IsRunningAsAdmin)
+            if (_optimizerService.IsRunningAsAdmin && _settingsService.Current.PurgeStandbyOnOneClick)
             {
                 var standbyResult = await _optimizerService.PurgeRamStandbyCacheAsync();
                 standbyMb = standbyResult.CachePurgedMb;
@@ -356,8 +672,9 @@ public partial class MainWindow : Window
                 AddLog(standbyResult.SummaryMessage);
             }
 
-            // 3. Limpiar Caché Temporal, Prefetch y DNS
-            var diskResult = await _optimizerService.CleanSystemCacheAsync();
+            // 3. Limpiar Caché Temporal, Prefetch y (opcionalmente) DNS
+            bool flushDns = _settingsService.Current.FlushDnsOnClean;
+            var diskResult = await _optimizerService.CleanSystemCacheAsync(flushDns);
             _sessionCleanedCacheMb += diskResult.FreedDiskMb;
             AddLog(diskResult.SummaryMessage);
 
@@ -369,8 +686,9 @@ public partial class MainWindow : Window
             DiskCacheSizeText.Text = $"{postScan.TotalSizeMb:N1} MB";
 
             double totalRamGain = ramResult.FreedRamMb + standbyMb;
+            string dnsSuffix = diskResult.DnsFlushed ? " (+ DNS vaciada)" : "";
             LastActionBannerText.Text =
-                $"✅ Optimización completada: {totalRamGain:N1} MB de RAM/Standby optimizados y {diskResult.FreedDiskMb:N1} MB de caché eliminados (+ DNS vaciada).";
+                $"✅ Optimización completada: {totalRamGain:N1} MB de RAM/Standby optimizados y {diskResult.FreedDiskMb:N1} MB de caché eliminados{dnsSuffix}.";
 
             AddLog("=== Optimización Integral 1-Clic finalizada con éxito ===");
         }
@@ -455,7 +773,8 @@ public partial class MainWindow : Window
         SetButtonsEnabled(false);
         try
         {
-            var clean = await _optimizerService.CleanSystemCacheAsync();
+            bool flushDns = _settingsService.Current.FlushDnsOnClean;
+            var clean = await _optimizerService.CleanSystemCacheAsync(flushDns);
             _sessionCleanedCacheMb += clean.FreedDiskMb;
             UpdateSessionCountersUi();
 

@@ -440,7 +440,7 @@ public sealed class OptimizerService
     /// Limpia archivos temporales huérfanos (%TEMP%, Windows\Temp, Prefetch), caché de miniaturas inactivas y vacía la caché DNS.
     /// Los archivos en uso por Windows o aplicaciones abiertas son bloqueados por NTFS y se omiten de forma segura.
     /// </summary>
-    public Task<DiskCacheCleanResult> CleanSystemCacheAsync()
+    public Task<DiskCacheCleanResult> CleanSystemCacheAsync(bool flushDns = true)
     {
         return Task.Run(() =>
         {
@@ -481,7 +481,7 @@ public sealed class OptimizerService
                 }
             }
 
-            bool dnsFlushed = FlushDnsCache();
+            bool dnsFlushed = flushDns && FlushDnsCache();
             double freedMb = freedBytes / (1024.0 * 1024.0);
 
             string dnsText = dnsFlushed ? " + Caché DNS vaciada" : "";
