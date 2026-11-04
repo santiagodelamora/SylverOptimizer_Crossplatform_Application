@@ -1,6 +1,7 @@
 # ⚡ WinOptimizer Pro — Windows 11 RAM, Cache & CPU Optimizer
 
-> 🌐 **Language / Idioma:** [🇪🇸 Español](./README.md) | **🇺🇸 English**
+> 🌐 **Language / Idioma:** [🇪🇸 Español](./README.md) | **🇺🇸 English**  
+> 📖 **Documentation:** **[Detailed User Manual](./USER_MANUAL.en.md)**
 
 A native dark-mode desktop application built with **C# and WPF (.NET 10)** for **Windows 11**, designed to monitor hardware in real time, free up inactive RAM, and clean system caches using official Windows APIs (`Win32` and `NT Native API`).
 
