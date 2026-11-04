@@ -60,7 +60,7 @@ public partial class MainWindow : Window
         };
         _telemetryTimer.Tick += TelemetryTimer_Tick;
 
-        LoadAndApplySettingsToUi(logTheme: false);
+        LoadAndApplySettingsToUi(saveTheme: false);
         ConfigureHeaderAndPrivilegeState();
 
         Loaded += MainWindow_Loaded;
@@ -68,8 +68,7 @@ public partial class MainWindow : Window
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
-        var activeTheme = _settingsService.GetThemeById(_settingsService.Current.ThemeId);
-        AddLog($"Aplicación iniciada con el tema '{activeTheme.Name}'. Monitoreando RAM y CPU mediante Win32 API.");
+        AddLog("Aplicación iniciada. Monitoreando RAM y CPU mediante Win32 API (GlobalMemoryStatusEx / GetSystemTimes).");
 
         if (_optimizerService.IsRunningAsAdmin)
         {
@@ -133,14 +132,14 @@ public partial class MainWindow : Window
         NavSettingsButton.Style = showSettings ? activeStyle : inactiveStyle;
     }
 
-    private void LoadAndApplySettingsToUi(bool logTheme)
+    private void LoadAndApplySettingsToUi(bool saveTheme)
     {
         _isSyncingSettingsUi = true;
         try
         {
             var cfg = _settingsService.Current;
 
-            ApplyColorTheme(cfg.ThemeId, logChange: logTheme);
+            ApplyColorTheme(cfg.ThemeId, saveChange: saveTheme);
 
             AutoOptimizeCheckBox.IsChecked = cfg.AutoOptimizeEnabled;
             SettingsAutoOptimizeCheckBox.IsChecked = cfg.AutoOptimizeEnabled;
@@ -165,7 +164,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ApplyColorTheme(string themeId, bool logChange)
+    private void ApplyColorTheme(string themeId, bool saveChange)
     {
         var theme = _settingsService.GetThemeById(themeId);
         _settingsService.Current.ThemeId = theme.Id;
@@ -236,11 +235,9 @@ public partial class MainWindow : Window
             UpdateTelemetryUi();
         }
 
-        if (logChange)
+        if (saveChange)
         {
             _settingsService.SaveSettings();
-            AddLog($"[Configuración] Tema de color cambiado a '{theme.Name}' ({theme.BadgeText}).");
-            LastActionBannerText.Text = $"🎨 Tema visual actualizado a '{theme.Name}'.";
         }
     }
 
@@ -260,7 +257,7 @@ public partial class MainWindow : Window
     {
         if (sender is FrameworkElement { Tag: string themeId })
         {
-            ApplyColorTheme(themeId, logChange: true);
+            ApplyColorTheme(themeId, saveChange: true);
         }
     }
 
@@ -268,7 +265,7 @@ public partial class MainWindow : Window
     {
         if (sender is FrameworkElement { Tag: string themeId })
         {
-            ApplyColorTheme(themeId, logChange: true);
+            ApplyColorTheme(themeId, saveChange: true);
             e.Handled = true;
         }
     }
@@ -407,8 +404,8 @@ public partial class MainWindow : Window
     private void ResetSettingsButton_Click(object sender, RoutedEventArgs e)
     {
         _settingsService.ResetToDefaults();
-        LoadAndApplySettingsToUi(logTheme: true);
-        AddLog("[Configuración] Se han restaurado todos los ajustes y el tema predeterminado (Esmeralda Cyber).");
+        LoadAndApplySettingsToUi(saveTheme: true);
+        AddLog("[Configuración] Se han restaurado los ajustes predeterminados.");
     }
 
     // =========================================================================
