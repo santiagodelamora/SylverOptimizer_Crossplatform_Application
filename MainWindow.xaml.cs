@@ -266,7 +266,6 @@ public partial class MainWindow : Window
         bannerGrad.GradientStops.Add(new GradientStop(theme.BannerGradEnd, 1.0));
         Resources["BannerGradientBrush"] = bannerGrad;
 
-        ActiveThemeHeaderBadge.Text = $"🎨 {theme.Name}";
         SelectedThemeSummaryText.Text = $"Tema activo: {theme.Name}";
 
         if (_optimizerService.IsRunningAsAdmin)

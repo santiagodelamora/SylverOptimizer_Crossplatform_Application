@@ -59,7 +59,7 @@ A diferencia de programas antiguos que utilizaban trucos inestables (como satura
 
 En la parte superior de la ventana encontrarás los controles globales de la aplicación:
 
-1. **Título e Insignia del Tema Activo**: Muestra el nombre de la aplicación junto con una etiqueta que indica el tema de color aplicado actualmente (por ejemplo, `🎨 Esmeralda Cyber`).
+1. **Título de la Aplicación**: Muestra el icono y el nombre oficial de **WinOptimizer Pro** junto con su descripción.
 2. **Selector de Vista (`📊 Panel Principal` | `⚙️ Configuración`)**: Permite alternar instantáneamente entre la pantalla de monitoreo/optimización y el panel de personalización y ajustes.
 3. **Interruptor Rápido `Auto-liberar RAM (>85%)`**: Activa o desactiva con un solo clic la optimización automática en segundo plano cuando el uso de memoria RAM alcance el umbral configurado.
 4. **Botón de Estado de Privilegios**:

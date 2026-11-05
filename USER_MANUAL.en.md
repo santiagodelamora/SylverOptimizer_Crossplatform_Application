@@ -59,7 +59,7 @@ Unlike legacy memory boosters that used unstable workarounds (such as allocating
 
 At the top of the window you will find the global application controls:
 
-1. **Application Title & Active Theme Badge**: Displays the app name alongside a badge showing the currently applied color theme (e.g., `🎨 Esmeralda Cyber`).
+1. **Application Title**: Displays the official **WinOptimizer Pro** icon, title, and subtitle.
 2. **View Switcher (`📊 Panel Principal` | `⚙️ Configuración`)**: Instantly toggles between the main monitoring/optimization dashboard and the customization/settings screen.
 3. **Quick Toggle `Auto-liberar RAM (>85%)`**: Enables or disables background automatic RAM optimization with a single click whenever RAM usage reaches your configured threshold.
 4. **Privilege Status Button**:

@@ -160,22 +160,7 @@
                                Foreground="{DynamicResource AccentPrimaryButtonFgBrush}"/>
                 </Border>
                 <StackPanel VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="WinOptimizer Pro" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                        <Border Background="{DynamicResource AccentSecondaryBgBrush}"
-                                BorderBrush="{DynamicResource AccentSecondaryBorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="5"
-                                Padding="7,2"
-                                Margin="10,0,0,0"
-                                VerticalAlignment="Center">
-                            <TextBlock x:Name="ActiveThemeHeaderBadge"
-                                       Text="🎨 Esmeralda Cyber"
-                                       FontSize="10.5"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource AccentSecondaryFgBrush}"/>
-                        </Border>
-                    </StackPanel>
+                    <TextBlock Text="WinOptimizer Pro" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
                     <TextBlock Text="Monitor de Hardware, Liberador de RAM y Limpiador de Caché para Windows 11"
                                FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"/>
                 </StackPanel>
