@@ -7,9 +7,10 @@ Aplicación de escritorio nativa con **interfaz gráfica (WPF / .NET 10)** en mo
 
 ## 📦 Instalación Directa (Windows 10 / 11 x64)
 
-Puedes instalar la aplicación directamente ejecutando el instalador incluido en el repositorio (no requiere tener .NET instalado, ya que es autocontenido):
+Puedes descargar e instalar la aplicación directamente desde la sección oficial de **GitHub Releases** (no requiere tener .NET instalado, ya que es autocontenido):
 
-- 👉 **[`Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe`](./Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe)**
+- 👉 **[Descargar `WinOptimizerPro_Setup_v1.0.0.exe` (Último Release)](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/WinOptimizerPro_Setup_v1.0.0.exe)**
+- 📋 **[Ver todas las versiones en GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)**
 
 ## ✨ Características Principales
 
@@ -47,8 +48,7 @@ dotnet run --configuration Release
 ## 📂 Estructura del Proyecto
 
 - `Assets/app.ico` — Icono de la aplicación y del instalador.
-- `Installer/WinOptimizerPro.iss` — Script de configuración del instalador para Inno Setup 6.
-- `Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe` — Instalador ejecutable autocontenido para Windows (x64).
+- `Installer/WinOptimizerPro.iss` — Script de configuración del instalador para Inno Setup 6 (distribuido en [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
 - `Services/NativeMethods.cs` — Declaraciones P/Invoke (`psapi.dll`, `kernel32.dll`, `ntdll.dll`, `advapi32.dll`).
 - `Services/SystemMonitorService.cs` — Telemetría de CPU, RAM, caché y procesos en tiempo real.
 - `Services/OptimizerService.cs` — Motor de liberación de RAM, purga de Standby List y limpieza de caché de disco/DNS.

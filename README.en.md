@@ -7,9 +7,10 @@ A native dark-mode desktop application built with **C# and WPF (.NET 10)** for *
 
 ## 📦 Direct Installation (Windows 10 / 11 x64)
 
-You can install the application directly using the self-contained installer included in the repository (no separate .NET runtime installation required):
+You can download and install the application directly from the official **GitHub Releases** page (no separate .NET runtime installation required, as it is self-contained):
 
-- 👉 **[`Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe`](./Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe)**
+- 👉 **[Download `WinOptimizerPro_Setup_v1.0.0.exe` (Latest Release)](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/WinOptimizerPro_Setup_v1.0.0.exe)**
+- 📋 **[View all versions on GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)**
 
 ## ✨ Key Features
 
@@ -47,8 +48,7 @@ dotnet run --configuration Release
 ## 📂 Project Structure
 
 - `Assets/app.ico` — Custom application and installer icon.
-- `Installer/WinOptimizerPro.iss` — Inno Setup 6 installer script.
-- `Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe` — Self-contained Windows x64 Setup executable.
+- `Installer/WinOptimizerPro.iss` — Inno Setup 6 installer script (distributed via [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
 - `Services/NativeMethods.cs` — P/Invoke declarations (`psapi.dll`, `kernel32.dll`, `ntdll.dll`, `advapi32.dll`).
 - `Services/SystemMonitorService.cs` — Real-time CPU, RAM, cache, and top process telemetry service.
 - `Services/OptimizerService.cs` — RAM working set trimmer, Standby List cleaner, and disk/DNS cache cleaner.

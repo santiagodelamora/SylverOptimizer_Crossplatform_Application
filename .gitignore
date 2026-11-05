@@ -36,6 +36,9 @@ project.fragment.lock.json
 artifacts/
 publish/
 
+# Inno Setup compiled installers (distributed via GitHub Releases)
+Installer/Output/
+
 # NuGet Packages
 *.nupkg
 *.snupkg
