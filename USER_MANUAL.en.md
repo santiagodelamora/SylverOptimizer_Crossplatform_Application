@@ -1,8 +1,8 @@
-# 📖 User Manual — WinOptimizer Pro
+# 📖 User Manual — WinOptimizer
 
 > 🌐 **Language / Idioma:** [🇪🇸 Español](./MANUAL_DE_USUARIO.md) | **🇺🇸 English**
 
-Welcome to the official user manual for **WinOptimizer Pro**, a native real-time hardware monitoring, RAM optimization, and system cache cleaning utility built for **Windows 10 and Windows 11 (x64)**.
+Welcome to the official user manual for **WinOptimizer**, a native real-time hardware monitoring, RAM optimization, and system cache cleaning utility built for **Windows 10 and Windows 11 (x64)**.
 
 ---
 
@@ -23,10 +23,10 @@ Welcome to the official user manual for **WinOptimizer Pro**, a native real-time
 
 ## 1. Introduction & System Safety
 
-**WinOptimizer Pro** lets you monitor your computer's memory and processor load in real time, reclaim inactive RAM, and recover disk space occupied by orphaned temporary files.
+**WinOptimizer** lets you monitor your computer's memory and processor load in real time, reclaim inactive RAM, and recover disk space occupied by orphaned temporary files.
 
 ### How does it work safely without risking system stability?
-Unlike legacy memory boosters that used unstable workarounds (such as allocating huge dummy arrays to force paging), **WinOptimizer Pro** communicates directly with the Windows kernel using official Microsoft-documented APIs:
+Unlike legacy memory boosters that used unstable workarounds (such as allocating huge dummy arrays to force paging), **WinOptimizer** communicates directly with the Windows kernel using official Microsoft-documented APIs:
 - **`EmptyWorkingSet` (`psapi.dll`)**: Instructs Windows to trim only inactive memory pages from process working sets without closing applications or losing unsaved work.
 - **`NtSetSystemInformation` (`ntdll.dll`)**: Natively flushes the Windows memory manager's *Modified Page List* and purges the *Standby List*.
 - **NTFS Lock Compliance**: During disk cleanup, any temporary file actively locked or in use by Windows or open programs is safely skipped automatically.
@@ -59,7 +59,7 @@ Unlike legacy memory boosters that used unstable workarounds (such as allocating
 
 At the top of the window you will find the global application controls:
 
-1. **Application Title**: Displays the official **WinOptimizer Pro** icon, title, and subtitle.
+1. **Application Title**: Displays the official **WinOptimizer** icon, title, and subtitle.
 2. **View Switcher (`📊 Panel Principal` | `⚙️ Configuración`)**: Instantly toggles between the main monitoring/optimization dashboard and the customization/settings screen.
 3. **Quick Toggle `Auto-liberar RAM (>85%)`**: Enables or disables background automatic RAM optimization with a single click whenever RAM usage reaches your configured threshold.
 4. **Privilege Status Button**:
@@ -206,7 +206,7 @@ Click any of the **6 theme cards** to switch the entire application's color pale
 **No.** `EmptyWorkingSet` never terminates processes or erases active data. It simply instructs the Windows memory manager to move pages that haven't been accessed recently out of the process's immediate working set, making that physical RAM available for applications that actively need it.
 
 ### ❓ Why does cache cleanup report that some "in-use" files were skipped?
-That is normal and safe Windows behavior. Open applications (such as your web browser, Discord, Visual Studio, or background Windows services) hold active locks on certain temporary files while running. **WinOptimizer Pro** respects those NTFS locks so running applications never crash or malfunction.
+That is normal and safe Windows behavior. Open applications (such as your web browser, Discord, Visual Studio, or background Windows services) hold active locks on certain temporary files while running. **WinOptimizer** respects those NTFS locks so running applications never crash or malfunction.
 
 ### ❓ When should I use "Purgar Caché RAM (Standby)"?
 Windows 11 caches files from previously closed programs in the *Standby List* in case you reopen them. Sometimes this cached memory is not released fast enough when launching a demanding game or video editor, causing micro-stutters. Purging the *Standby List* as Administrator before starting a heavy workload makes all of that memory immediately free.

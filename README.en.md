@@ -1,4 +1,4 @@
-# ⚡ WinOptimizer Pro — Windows 11 RAM, Cache & CPU Optimizer
+# ⚡ WinOptimizer — Windows 11 RAM, Cache & CPU Optimizer
 
 > 🌐 **Language / Idioma:** [🇪🇸 Español](./README.md) | **🇺🇸 English**  
 > 📖 **Documentation:** **[Detailed User Manual](./USER_MANUAL.en.md)**

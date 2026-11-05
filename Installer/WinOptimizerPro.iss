@@ -1,4 +1,4 @@
-#define MyAppName "WinOptimizer Pro"
+#define MyAppName "WinOptimizer"
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "Santiago De la Mora"
 #define MyAppURL "https://github.com/santiagodelamora/WinOptimizer_Desktop_Application"
