@@ -169,7 +169,7 @@ The bottom-right panel provides a real-time event console:
 Clicking the **`⚙️ Configuración`** button in the top navigation bar opens the customization and preferences panel. All changes made here **are saved automatically**.
 
 ### 🎨 1. Color Themes & Visual Appearance
-Click any of the **6 theme cards** to switch the entire application's color palette in real time:
+Click any of the **8 theme cards** to switch the entire application's color palette in real time:
 
 1. **Esmeralda Cyber *(Default)***: Deep dark palette inspired by AVG Cleaner with neon green (`#00E676`) and cyan (`#00B0FF`) accents.
 2. **Océano Ártico *(Blue / Cyan)***: Deep navy background with electric turquoise and sapphire blue accents.
@@ -177,6 +177,8 @@ Click any of the **6 theme cards** to switch the entire application's color pale
 4. **Carmesí Gaming *(Red / Gaming)***: High-contrast obsidian black with ruby red and bright orange accents.
 5. **Solar Dorado *(Amber / Gold)***: Sleek titanium charcoal paired with warm gold and amber accents.
 6. **Modo Claro Cristal *(Light Mode)***: Bright *Windows 11 Light* interface with crisp white cards, soft borders, and emerald/royal blue accents.
+7. **Gris Oscuro *(Gray / Graphite)***: Neutral graphite and slate tones with bright silver and steel accents.
+8. **Gris Claro *(Gray / Silver)***: Soft pearl gray and brushed aluminum palette designed for low eye strain.
 
 ### 🧠 2. RAM Automation & Optimization
 - **Auto-release RAM when exceeding threshold**: Enables background memory monitoring with a built-in **60-second cooldown** between automatic cleanups to avoid CPU overhead.

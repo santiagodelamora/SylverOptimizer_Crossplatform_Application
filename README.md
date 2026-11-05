@@ -29,7 +29,7 @@ Puedes descargar e instalar la aplicación directamente desde la sección oficia
 - **Auto-Optimización Inteligente:**
   - Modo opcional para liberar RAM automáticamente cuando el consumo supere el umbral configurable (**65% – 95%**, por defecto **85%**).
 - **Sección de Configuración y Temas de Color Personalizables:**
-  - Selector visual en tiempo real con **6 temas de color**: *Esmeralda Cyber*, *Océano Ártico*, *Amatista Neón*, *Carmesí Gaming*, *Solar Dorado* y *Modo Claro Cristal*.
+  - Selector visual en tiempo real con **8 temas de color**: *Esmeralda Cyber*, *Océano Ártico*, *Amatista Neón*, *Carmesí Gaming*, *Solar Dorado*, *Modo Claro Cristal*, *Gris Oscuro* y *Gris Claro*.
   - Ajustes persistentes de frecuencia de telemetría (`0.5s`, `1.0s`, `2.0s`), limpieza DNS y purga de Standby List guardados automáticamente en `%LocalAppData%\WinOptimizerPro\settings.json`.
 
 ## 🛠️ Compilación desde el Código Fuente

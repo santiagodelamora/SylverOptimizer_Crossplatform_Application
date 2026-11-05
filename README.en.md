@@ -29,7 +29,7 @@ You can download and install the application directly from the official **GitHub
 - **Smart Auto-Optimization:**
   - Optional background toggle that automatically trims inactive RAM working sets when memory usage exceeds a configurable threshold (**65% – 95%**, **85%** by default).
 - **Settings Section & Customizable Color Themes:**
-  - Real-time visual theme switcher featuring **6 color palettes**: *Emerald Cyber*, *Arctic Ocean*, *Amethyst Neon*, *Crimson Gaming*, *Solar Amber*, and *Crystal Light Mode*.
+  - Real-time visual theme switcher featuring **8 color palettes**: *Emerald Cyber*, *Arctic Ocean*, *Amethyst Neon*, *Crimson Gaming*, *Solar Amber*, *Crystal Light Mode*, *Dark Gray*, and *Light Gray*.
   - Persistent preferences for telemetry refresh rate (`0.5s`, `1.0s`, `2.0s`), DNS flushing, and Standby List purging automatically saved in `%LocalAppData%\WinOptimizerPro\settings.json`.
 
 ## 🛠️ Building from Source

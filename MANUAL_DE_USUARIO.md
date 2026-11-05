@@ -169,7 +169,7 @@ En la esquina inferior derecha se encuentra la consola de eventos en tiempo real
 Al hacer clic en el botón **`⚙️ Configuración`** de la barra superior, accederás al panel de personalización avanzada. Todos los cambios que realices aquí **se guardan automáticamente**.
 
 ### 🎨 1. Temas de Color y Apariencia Visual
-Puedes cambiar la paleta de colores completa de la aplicación en tiempo real haciendo clic sobre cualquiera de las **6 tarjetas de tema**:
+Puedes cambiar la paleta de colores completa de la aplicación en tiempo real haciendo clic sobre cualquiera de las **8 tarjetas de tema**:
 
 1. **Esmeralda Cyber *(Predeterminado)***: Estilo clásico oscuro inspirado en AVG Cleaner con acentos en verde neón (`#00E676`) y azul cian (`#00B0FF`).
 2. **Océano Ártico *(Azul / Cian)***: Fondo azul marino profundo con acentos en turquesa eléctrico y azul zafiro.
@@ -177,6 +177,8 @@ Puedes cambiar la paleta de colores completa de la aplicación en tiempo real ha
 4. **Carmesí Gaming *(Rojo / Gaming)***: Alto contraste en negro obsidiana con acentos en rojo rubí y naranja brillante.
 5. **Solar Dorado *(Ámbar / Oro)***: Carbón titanio elegante con acentos en oro cálido y ámbar.
 6. **Modo Claro Cristal *(Modo Claro)***: Interfaz luminosa estilo *Windows 11 Light* con tarjetas blancas, bordes suaves y acentos en verde esmeralda y azul real.
+7. **Gris Oscuro *(Gris / Grafito)***: Tonos grafito y pizarra neutros con acentos en plata brillante y acero.
+8. **Gris Claro *(Gris / Plata)***: Interfaz en tonos gris perla y aluminio suave diseñada para reducir el cansancio visual.
 
 ### 🧠 2. Automatización y Optimización de RAM
 - **Liberar RAM automáticamente cuando supere el umbral**: Activa la vigilancia automática en segundo plano. Incluye un tiempo de enfriamiento (*cooldown*) de **60 segundos** entre limpiezas automáticas para no sobrecargar el procesador.
