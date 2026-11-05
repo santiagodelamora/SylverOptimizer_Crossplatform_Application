@@ -318,13 +318,14 @@
                         </Grid.RowDefinitions>
 
                         <!-- Cabecera RAM -->
-                        <Grid Grid.Row="0" Margin="0,0,0,10">
-                            <StackPanel Orientation="Horizontal">
+                        <Grid Grid.Row="0" MinHeight="22" Margin="0,0,0,10">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <TextBlock Text="MEMORIA RAM FÍSICA &amp; CACHÉ" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}"/>
                             </StackPanel>
                             <TextBlock x:Name="RamTotalHeaderLabel"
                                        Text="0.0 GB Totales"
                                        HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
                                        FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource AccentGreenBrush}"/>
                         </Grid>
 
@@ -445,14 +446,71 @@
                         </Grid.RowDefinitions>
 
                         <!-- Cabecera CPU -->
-                        <Grid Grid.Row="0" Margin="0,0,0,10">
-                            <TextBlock Text="USO DE PROCESADOR (CPU) &amp; CACHÉ DEL SISTEMA" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}"/>
-                            <TextBlock x:Name="CpuModelHeaderLabel"
-                                       Text="CPU"
-                                       HorizontalAlignment="Right"
-                                       MaxWidth="270"
-                                       TextTrimming="CharacterEllipsis"
-                                       FontSize="11.5" FontWeight="SemiBold" Foreground="{DynamicResource AccentCyanBrush}"/>
+                        <Grid Grid.Row="0" MinHeight="22" Margin="0,0,0,10">
+                            <TextBlock Text="USO DE PROCESADOR (CPU) &amp; CACHÉ DEL SISTEMA"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                            <Button x:Name="CpuInfoButton"
+                                    Style="{StaticResource CyanActionButton}"
+                                    Click="CpuInfoButton_Click"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Width="24"
+                                    Height="22"
+                                    Padding="0"
+                                    FontSize="12.5"
+                                    FontWeight="Bold"
+                                    Content="ⓘ"
+                                    ToolTip="Haz clic para ver el modelo completo del procesador"/>
+
+                            <Popup x:Name="CpuInfoPopup"
+                                   PlacementTarget="{Binding ElementName=CpuInfoButton}"
+                                   Placement="Bottom"
+                                   HorizontalOffset="-290"
+                                   VerticalOffset="6"
+                                   AllowsTransparency="True"
+                                   PopupAnimation="Fade"
+                                   StaysOpen="False">
+                                <Border Background="{DynamicResource CardBgBrush}"
+                                        BorderBrush="{DynamicResource AccentCyanBrush}"
+                                        BorderThickness="1.5"
+                                        CornerRadius="10"
+                                        Padding="14,10"
+                                        Width="314">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,4">
+                                            <TextBlock Text="🖥️ INFORMACIÓN DEL PROCESADOR"
+                                                       FontSize="10.5"
+                                                       FontWeight="Bold"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                            <TextBlock Text="✕"
+                                                       FontSize="11"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Center"
+                                                       Cursor="Hand"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                                       MouseLeftButtonUp="CloseCpuInfoPopup_MouseLeftButtonUp"/>
+                                        </Grid>
+                                        <TextBlock x:Name="CpuModelPopupText"
+                                                   Text="CPU"
+                                                   FontSize="13"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                                   Margin="0,0,0,4"/>
+                                        <TextBlock x:Name="CpuDetailsPopupText"
+                                                   Text="0 Núcleos Lógicos"
+                                                   FontSize="11.5"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource AccentCyanBrush}"/>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
                         </Grid>
 
                         <!-- Medidor Circular CPU + Gráfico en Tiempo Real -->

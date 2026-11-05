@@ -92,7 +92,9 @@ public partial class MainWindow : Window
 
     private void ConfigureHeaderAndPrivilegeState()
     {
-        CpuModelHeaderLabel.Text = _monitorService.CpuModelName;
+        CpuModelPopupText.Text = _monitorService.CpuModelName;
+        CpuDetailsPopupText.Text = $"{_monitorService.LogicalCores} Núcleos Lógicos • Arquitectura x64";
+        CpuInfoButton.ToolTip = $"Ver modelo de CPU: {_monitorService.CpuModelName}";
         CpuCoresShortText.Text = $"{_monitorService.LogicalCores} Núcleos Lógicos";
 
         if (_optimizerService.IsRunningAsAdmin)
@@ -106,6 +108,16 @@ public partial class MainWindow : Window
             AdminElevateButton.Content = "🛡️ Elevar a Administrador (Standby List)";
             AdminElevateButton.ToolTip = "Reinicia la aplicación con permisos de Administrador para desbloquear el vaciado de la Standby List del kernel y Prefetch.";
         }
+    }
+
+    private void CpuInfoButton_Click(object sender, RoutedEventArgs e)
+    {
+        CpuInfoPopup.IsOpen = true;
+    }
+
+    private void CloseCpuInfoPopup_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        CpuInfoPopup.IsOpen = false;
     }
 
     private void EnsureWindowFitsWorkArea()

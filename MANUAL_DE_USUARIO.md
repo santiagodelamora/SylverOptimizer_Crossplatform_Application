@@ -119,7 +119,7 @@ Ubicado en la tarjeta central izquierda del **Panel Principal**, ofrece telemetr
 Ubicado en la tarjeta central derecha del **Panel Principal**, combina el monitoreo del procesador con las herramientas de limpieza de almacenamiento y red:
 
 ### Elementos Visuales
-- **Cabecera**: Detecta y muestra automáticamente el nombre exacto de tu procesador (leído desde el registro de hardware de Windows).
+- **Cabecera y Botón de Información (`ⓘ`)**: Incluye un botón compacto **`ⓘ`** a la derecha del título que, al hacer clic, despliega una tarjeta emergente con el nombre completo de tu procesador (leído desde el registro de hardware de Windows), el número de núcleos lógicos y la arquitectura.
 - **Medidor Circular de CPU**: Porcentaje de uso global del procesador en tiempo real y número de núcleos lógicos detectados.
 - **Gráfico de Historial CPU (60s)**: Evolución de la carga del procesador durante los últimos 60 segundos.
 

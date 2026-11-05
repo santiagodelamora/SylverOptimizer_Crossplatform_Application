@@ -119,7 +119,7 @@ Located on the middle-left card of the **Main Dashboard**, this module provides 
 Located on the middle-right card of the **Main Dashboard**, this module pairs real-time CPU telemetry with storage and network cache tools:
 
 ### Visual Elements
-- **Header**: Automatically detects and displays your processor's exact model name from the Windows hardware registry.
+- **Header & Info Button (`ⓘ`)**: Features a compact **`ⓘ`** button on the right side of the header that, when clicked, opens a pop-up card displaying your processor's full model name (read from the Windows hardware registry), logical core count, and architecture.
 - **Circular CPU Gauge**: Real-time overall CPU utilization percentage and logical core count.
 - **60-Second CPU History Chart**: Plots processor utilization over the last 60 seconds.
 
