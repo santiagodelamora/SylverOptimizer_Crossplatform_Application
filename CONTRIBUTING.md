@@ -81,6 +81,7 @@ dotnet run --configuration Release
 - **APIs Nativas (`P/Invoke`):** Cualquier llamada nueva a `kernel32.dll`, `psapi.dll`, `ntdll.dll` o `advapi32.dll` debe declararse en [`Services/NativeMethods.cs`](./Services/NativeMethods.cs) manejando adecuadamente permisos e impidiendo bloqueos en el hilo de interfaz gráfica (UI Thread).
 - **Temas Dinámicos:** Si agregas controles visuales en [`MainWindow.xaml`](./MainWindow.xaml), utiliza recursos dinámicos (`{DynamicResource ...}`) para que sean compatibles con los **6 temas de color** gestionados por [`Services/AppSettingsService.cs`](./Services/AppSettingsService.cs).
 - **Documentación Bilingüe:** Si tu cambio modifica la interfaz o añade una funcionalidad visible para el usuario, actualiza tanto la documentación en español ([`README.md`](./README.md), [`MANUAL_DE_USUARIO.md`](./MANUAL_DE_USUARIO.md)) como en inglés ([`README.en.md`](./README.en.md), [`USER_MANUAL.en.md`](./USER_MANUAL.en.md)).
+- **Licencia (`GNU GPLv3`):** Al enviar una contribución a este repositorio, aceptas que tu código sea distribuido bajo los términos de la licencia **[GNU General Public License v3.0](./LICENSE)**.
 
 ---
 
@@ -152,4 +153,5 @@ dotnet run --configuration Release
 - **Native Win32/NT APIs (`P/Invoke`):** Place all native signatures in [`Services/NativeMethods.cs`](./Services/NativeMethods.cs), handle privilege/access exceptions gracefully, and keep heavy operations off the WPF UI thread.
 - **Dynamic Color Themes:** Any new UI elements in [`MainWindow.xaml`](./MainWindow.xaml) must use `{DynamicResource ...}` bindings so they adapt seamlessly to all **6 color themes** defined in [`Services/AppSettingsService.cs`](./Services/AppSettingsService.cs).
 - **Bilingual Documentation:** User-facing changes should be reflected in both the Spanish ([`README.md`](./README.md), [`MANUAL_DE_USUARIO.md`](./MANUAL_DE_USUARIO.md)) and English ([`README.en.md`](./README.en.md), [`USER_MANUAL.en.md`](./USER_MANUAL.en.md)) documentation.
+- **License (`GNU GPLv3`):** By submitting a contribution to this repository, you agree that your work will be licensed under the **[GNU General Public License v3.0](./LICENSE)**.
 

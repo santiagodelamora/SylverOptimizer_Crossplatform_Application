@@ -54,3 +54,9 @@ dotnet run --configuration Release
 - `Services/OptimizerService.cs` — RAM working set trimmer, Standby List cleaner, and disk/DNS cache cleaner.
 - `Services/AppSettingsService.cs` — Dynamic color theme engine and JSON configuration persistence service.
 - `MainWindow.xaml` / `MainWindow.xaml.cs` — Themeable WPF GUI with real-time gauges, charts, and settings panel.
+- [`LICENSE`](./LICENSE) — **GNU General Public License v3.0 (GPLv3)** free software license.
+
+## 📄 License
+
+This project is free software distributed under the terms of the **[GNU General Public License v3.0 (GPL-3.0)](./LICENSE)**.  
+Copyright © 2026 **Santiago De la Mora**.

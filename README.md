@@ -54,3 +54,9 @@ dotnet run --configuration Release
 - `Services/OptimizerService.cs` — Motor de liberación de RAM, purga de Standby List y limpieza de caché de disco/DNS.
 - `Services/AppSettingsService.cs` — Gestión de temas de color dinámicos y persistencia de configuración en JSON.
 - `MainWindow.xaml` / `MainWindow.xaml.cs` — Interfaz gráfica con paneles de monitoreo, configuración, gráficos y controles interactivos.
+- [`LICENSE`](./LICENSE) — Licencia de software libre **GNU General Public License v3.0 (GPLv3)**.
+
+## 📄 Licencia
+
+Este proyecto es software libre y se distribuye bajo los términos de la licencia **[GNU General Public License v3.0 (GPL-3.0)](./LICENSE)**.  
+Copyright © 2026 **Santiago De la Mora**.
