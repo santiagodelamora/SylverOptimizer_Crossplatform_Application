@@ -6,7 +6,7 @@
 
 ## 🇪🇸 Español — Guía de Contribución
 
-¡Gracias por tu interés en contribuir a **WinOptimizer**! Este documento detalla las reglas de flujo de trabajo, formato de commits y estándares técnicos para colaborar en el repositorio.
+¡Gracias por tu interés en contribuir a **SylverOptimizer**! Este documento detalla las reglas de flujo de trabajo, formato de commits y estándares técnicos para colaborar en el repositorio.
 
 ### 1. Flujo de Ramas (Git Workflow)
 
@@ -58,7 +58,7 @@ ES: Agrega las opciones de intervalo de telemetría de 0.5s, 1.0s y 2.0s en el p
 - **Sistema Operativo:** Windows 10 o Windows 11 (x64).
 - **SDK:** [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (`net10.0-windows` con soporte para WPF).
 - **IDE recomendado:** Visual Studio 2022/2026, JetBrains Rider o VS Code (con extensión C# Dev Kit).
-- **Opcional (para generar instalador):** [Inno Setup 6](https://jrsoftware.org/isinfo.php) para compilar `Installer/WinOptimizerPro.iss`.
+- **Opcional (para generar instalador):** [Inno Setup 6](https://jrsoftware.org/isinfo.php) para compilar `Installer/SylverOptimizer.iss`.
 
 ### 4. Compilación y Pruebas Locales
 
@@ -69,7 +69,7 @@ Antes de abrir un Pull Request, verifica que el proyecto compile sin errores ni 
 dotnet restore
 
 # Compilar en modo Release
-dotnet build WinOptimizerPro.csproj --configuration Release
+dotnet build SylverOptimizer.csproj --configuration Release
 
 # Ejecutar la aplicación
 dotnet run --configuration Release
@@ -79,7 +79,7 @@ dotnet run --configuration Release
 
 - **Formato:** Respeta las reglas definidas en [`.editorconfig`](./.editorconfig) (indentación de 4 espacios en C# y XAML, codificación UTF-8).
 - **APIs Nativas (`P/Invoke`):** Cualquier llamada nueva a `kernel32.dll`, `psapi.dll`, `ntdll.dll` o `advapi32.dll` debe declararse en [`Services/NativeMethods.cs`](./Services/NativeMethods.cs) manejando adecuadamente permisos e impidiendo bloqueos en el hilo de interfaz gráfica (UI Thread).
-- **Temas Dinámicos:** Si agregas controles visuales en [`MainWindow.xaml`](./MainWindow.xaml), utiliza recursos dinámicos (`{DynamicResource ...}`) para que sean compatibles con los **6 temas de color** gestionados por [`Services/AppSettingsService.cs`](./Services/AppSettingsService.cs).
+- **Temas Dinámicos:** Si agregas controles visuales en [`MainWindow.xaml`](./MainWindow.xaml), utiliza recursos dinámicos (`{DynamicResource ...}`) para que sean compatibles con los **8 temas de color** gestionados por [`Services/AppSettingsService.cs`](./Services/AppSettingsService.cs).
 - **Documentación Bilingüe:** Si tu cambio modifica la interfaz o añade una funcionalidad visible para el usuario, actualiza tanto la documentación en español ([`README.md`](./README.md), [`MANUAL_DE_USUARIO.md`](./MANUAL_DE_USUARIO.md)) como en inglés ([`README.en.md`](./README.en.md), [`USER_MANUAL.en.md`](./USER_MANUAL.en.md)).
 - **Licencia (`GNU GPLv3`):** Al enviar una contribución a este repositorio, aceptas que tu código sea distribuido bajo los términos de la licencia **[GNU General Public License v3.0](./LICENSE)**.
 
@@ -87,7 +87,7 @@ dotnet run --configuration Release
 
 ## 🇺🇸 English — Contribution Guide
 
-Thank you for your interest in contributing to **WinOptimizer**! This document outlines our branching workflow, bilingual commit conventions, and technical standards.
+Thank you for your interest in contributing to **SylverOptimizer**! This document outlines our branching workflow, bilingual commit conventions, and technical standards.
 
 ### 1. Branching Workflow
 
@@ -130,7 +130,7 @@ ES: <Detailed explanation in Spanish of what changed and why.>
 - **Operating System:** Windows 10 or Windows 11 (x64).
 - **SDK:** [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (`net10.0-windows` with WPF workload).
 - **Recommended IDE:** Visual Studio 2022/2026, JetBrains Rider, or VS Code (with C# Dev Kit).
-- **Optional (for building the installer):** [Inno Setup 6](https://jrsoftware.org/isinfo.php) to compile `Installer/WinOptimizerPro.iss`.
+- **Optional (for building the installer):** [Inno Setup 6](https://jrsoftware.org/isinfo.php) to compile `Installer/SylverOptimizer.iss`.
 
 ### 4. Building & Testing Locally
 
@@ -141,7 +141,7 @@ Before submitting a Pull Request, ensure the application builds cleanly in `Rele
 dotnet restore
 
 # Build in Release mode
-dotnet build WinOptimizerPro.csproj --configuration Release
+dotnet build SylverOptimizer.csproj --configuration Release
 
 # Run the application
 dotnet run --configuration Release
@@ -151,7 +151,7 @@ dotnet run --configuration Release
 
 - **Formatting:** Follow the rules in [`.editorconfig`](./.editorconfig) (4-space indentation for C# and XAML, UTF-8 encoding).
 - **Native Win32/NT APIs (`P/Invoke`):** Place all native signatures in [`Services/NativeMethods.cs`](./Services/NativeMethods.cs), handle privilege/access exceptions gracefully, and keep heavy operations off the WPF UI thread.
-- **Dynamic Color Themes:** Any new UI elements in [`MainWindow.xaml`](./MainWindow.xaml) must use `{DynamicResource ...}` bindings so they adapt seamlessly to all **6 color themes** defined in [`Services/AppSettingsService.cs`](./Services/AppSettingsService.cs).
+- **Dynamic Color Themes:** Any new UI elements in [`MainWindow.xaml`](./MainWindow.xaml) must use `{DynamicResource ...}` bindings so they adapt seamlessly to all **8 color themes** defined in [`Services/AppSettingsService.cs`](./Services/AppSettingsService.cs).
 - **Bilingual Documentation:** User-facing changes should be reflected in both the Spanish ([`README.md`](./README.md), [`MANUAL_DE_USUARIO.md`](./MANUAL_DE_USUARIO.md)) and English ([`README.en.md`](./README.en.md), [`USER_MANUAL.en.md`](./USER_MANUAL.en.md)) documentation.
 - **License (`GNU GPLv3`):** By submitting a contribution to this repository, you agree that your work will be licensed under the **[GNU General Public License v3.0](./LICENSE)**.
 

@@ -12,15 +12,15 @@ if %ERRORLEVEL% NEQ 0 (
 
 echo [2/2] Compilando instalador con Inno Setup 6...
 if exist "%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe" (
-    "%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe" "Installer\WinOptimizerPro.iss"
+    "%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe" "Installer\SylverOptimizer.iss"
 ) else if exist "%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe" (
-    "%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe" "Installer\WinOptimizerPro.iss"
+    "%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe" "Installer\SylverOptimizer.iss"
 ) else (
-    echo No se encontró Inno Setup 6. El ejecutable portable está listo en la carpeta "publish\WinOptimizerPro.exe".
+    echo No se encontró Inno Setup 6. El ejecutable portable está listo en la carpeta "publish\SylverOptimizer.exe".
     pause
     exit /b 1
 )
 
 echo.
-echo Instalador generado correctamente en: Installer\Output\WinOptimizerPro_Setup_v1.0.0.exe
+echo Instalador generado correctamente en: Installer\Output\SylverOptimizer_Setup_v1.0.0.exe
 pause

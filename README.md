@@ -1,4 +1,4 @@
-# ⚡ WinOptimizer — Optimización de RAM, Caché y CPU para Windows 11
+# ⚡ SylverOptimizer — Optimización de RAM, Caché y CPU para Windows 11
 
 > 🌐 **Idioma / Language:** **🇪🇸 Español** | [🇺🇸 English](./README.en.md)  
 > 📖 **Documentación:** **[Manual de Usuario Detallado](./MANUAL_DE_USUARIO.md)** | **[Guía de Contribución](./CONTRIBUTING.md)**
@@ -9,7 +9,7 @@ Aplicación de escritorio nativa con **interfaz gráfica (WPF / .NET 10)** en mo
 
 Puedes descargar e instalar la aplicación directamente desde la sección oficial de **GitHub Releases** (no requiere tener .NET instalado, ya que es autocontenido):
 
-- 👉 **[Descargar `WinOptimizerPro_Setup_v1.0.0.exe` (Último Release)](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/WinOptimizerPro_Setup_v1.0.0.exe)**
+- 👉 **[Descargar `SylverOptimizer_Setup_v1.0.0.exe` (Último Release)](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/SylverOptimizer_Setup_v1.0.0.exe)**
 - 📋 **[Ver todas las versiones en GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)**
 
 ## ✨ Características Principales
@@ -30,7 +30,7 @@ Puedes descargar e instalar la aplicación directamente desde la sección oficia
   - Modo opcional para liberar RAM automáticamente cuando el consumo supere el umbral configurable (**65% – 95%**, por defecto **85%**).
 - **Sección de Configuración y Temas de Color Personalizables:**
   - Selector visual en tiempo real con **8 temas de color**: *Esmeralda Cyber*, *Océano Ártico*, *Amatista Neón*, *Carmesí Gaming*, *Solar Dorado*, *Modo Claro Cristal*, *Gris Oscuro* y *Gris Claro*.
-  - Ajustes persistentes de frecuencia de telemetría (`0.5s`, `1.0s`, `2.0s`), limpieza DNS y purga de Standby List guardados automáticamente en `%LocalAppData%\WinOptimizerPro\settings.json`.
+  - Ajustes persistentes de frecuencia de telemetría (`0.5s`, `1.0s`, `2.0s`), limpieza DNS y purga de Standby List guardados automáticamente en `%LocalAppData%\SylverOptimizer\settings.json`.
 
 ## 🛠️ Compilación desde el Código Fuente
 
@@ -42,13 +42,13 @@ dotnet build --configuration Release
 dotnet run --configuration Release
 ```
 
-- Para ejecutar la app rápidamente: [`Ejecutar_WinOptimizerPro.bat`](./Ejecutar_WinOptimizerPro.bat)
+- Para ejecutar la app rápidamente: [`Ejecutar_SylverOptimizer.bat`](./Ejecutar_SylverOptimizer.bat)
 - Para volver a generar el instalador con **Inno Setup 6**: [`Crear_Instalador.bat`](./Crear_Instalador.bat)
 
 ## 📂 Estructura del Proyecto
 
 - `Assets/app.ico` — Icono de la aplicación y del instalador.
-- `Installer/WinOptimizerPro.iss` — Script de configuración del instalador para Inno Setup 6 (distribuido en [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
+- `Installer/SylverOptimizer.iss` — Script de configuración del instalador para Inno Setup 6 (distribuido en [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
 - `Services/NativeMethods.cs` — Declaraciones P/Invoke (`psapi.dll`, `kernel32.dll`, `ntdll.dll`, `advapi32.dll`).
 - `Services/SystemMonitorService.cs` — Telemetría de CPU, RAM, caché y procesos en tiempo real.
 - `Services/OptimizerService.cs` — Motor de liberación de RAM, purga de Standby List y limpieza de caché de disco/DNS.

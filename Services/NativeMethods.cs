@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace WinOptimizerPro.Services;
+namespace SylverOptimizer.Services;
 
 /// <summary>
 /// Declaraciones P/Invoke hacia las APIs oficiales de Windows (Win32 y NT Native API)

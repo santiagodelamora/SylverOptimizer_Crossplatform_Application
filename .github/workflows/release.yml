@@ -25,7 +25,7 @@ jobs:
 
       - name: Publish Single-File Win-x64 / Publicar ejecutable autocontenido
         run: |
-          dotnet publish WinOptimizerPro.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
+          dotnet publish SylverOptimizer.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
 
       - name: Compile Installer with Inno Setup 6 / Compilar instalador .exe
         shell: pwsh
@@ -34,12 +34,12 @@ jobs:
           if (-not (Test-Path $iscc)) {
             choco install innosetup --yes --no-progress
           }
-          & $iscc "Installer\WinOptimizerPro.iss"
+          & $iscc "Installer\SylverOptimizer.iss"
 
       - name: Upload Installer Artifact / Subir artefacto de compilación
         uses: actions/upload-artifact@v4
         with:
-          name: WinOptimizer-Installer
+          name: SylverOptimizer-Installer
           path: Installer/Output/*.exe
 
       - name: Create GitHub Release / Publicar en GitHub Releases
