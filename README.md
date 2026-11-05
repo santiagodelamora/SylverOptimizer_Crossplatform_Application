@@ -1,14 +1,16 @@
-# ⚡ WinOptimizer Pro — Optimización de RAM, Caché y CPU para Windows 11
+# ⚡ WinOptimizer — Optimización de RAM, Caché y CPU para Windows 11
 
-> 🌐 **Idioma / Language:** **🇪🇸 Español** | [🇺🇸 English](./README.en.md)
+> 🌐 **Idioma / Language:** **🇪🇸 Español** | [🇺🇸 English](./README.en.md)  
+> 📖 **Documentación:** **[Manual de Usuario Detallado](./MANUAL_DE_USUARIO.md)** | **[Guía de Contribución](./CONTRIBUTING.md)**
 
 Aplicación de escritorio nativa con **interfaz gráfica (WPF / .NET 10)** en modo oscuro para **Windows 11**, diseñada para monitorear el hardware en tiempo real, liberar memoria RAM inactiva y limpiar cachés del sistema utilizando exclusivamente las APIs oficiales de Windows (`Win32` y `NT Native API`).
 
 ## 📦 Instalación Directa (Windows 10 / 11 x64)
 
-Puedes instalar la aplicación directamente ejecutando el instalador incluido en el repositorio (no requiere tener .NET instalado, ya que es autocontenido):
+Puedes descargar e instalar la aplicación directamente desde la sección oficial de **GitHub Releases** (no requiere tener .NET instalado, ya que es autocontenido):
 
-- 👉 **[`Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe`](./Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe)**
+- 👉 **[Descargar `WinOptimizerPro_Setup_v1.0.0.exe` (Último Release)](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/WinOptimizerPro_Setup_v1.0.0.exe)**
+- 📋 **[Ver todas las versiones en GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)**
 
 ## ✨ Características Principales
 
@@ -27,7 +29,7 @@ Puedes instalar la aplicación directamente ejecutando el instalador incluido en
 - **Auto-Optimización Inteligente:**
   - Modo opcional para liberar RAM automáticamente cuando el consumo supere el umbral configurable (**65% – 95%**, por defecto **85%**).
 - **Sección de Configuración y Temas de Color Personalizables:**
-  - Selector visual en tiempo real con **6 temas de color**: *Esmeralda Cyber*, *Océano Ártico*, *Amatista Neón*, *Carmesí Gaming*, *Solar Dorado* y *Modo Claro Cristal*.
+  - Selector visual en tiempo real con **8 temas de color**: *Esmeralda Cyber*, *Océano Ártico*, *Amatista Neón*, *Carmesí Gaming*, *Solar Dorado*, *Modo Claro Cristal*, *Gris Oscuro* y *Gris Claro*.
   - Ajustes persistentes de frecuencia de telemetría (`0.5s`, `1.0s`, `2.0s`), limpieza DNS y purga de Standby List guardados automáticamente en `%LocalAppData%\WinOptimizerPro\settings.json`.
 
 ## 🛠️ Compilación desde el Código Fuente
@@ -46,10 +48,15 @@ dotnet run --configuration Release
 ## 📂 Estructura del Proyecto
 
 - `Assets/app.ico` — Icono de la aplicación y del instalador.
-- `Installer/WinOptimizerPro.iss` — Script de configuración del instalador para Inno Setup 6.
-- `Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe` — Instalador ejecutable autocontenido para Windows (x64).
+- `Installer/WinOptimizerPro.iss` — Script de configuración del instalador para Inno Setup 6 (distribuido en [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
 - `Services/NativeMethods.cs` — Declaraciones P/Invoke (`psapi.dll`, `kernel32.dll`, `ntdll.dll`, `advapi32.dll`).
 - `Services/SystemMonitorService.cs` — Telemetría de CPU, RAM, caché y procesos en tiempo real.
 - `Services/OptimizerService.cs` — Motor de liberación de RAM, purga de Standby List y limpieza de caché de disco/DNS.
 - `Services/AppSettingsService.cs` — Gestión de temas de color dinámicos y persistencia de configuración en JSON.
 - `MainWindow.xaml` / `MainWindow.xaml.cs` — Interfaz gráfica con paneles de monitoreo, configuración, gráficos y controles interactivos.
+- [`LICENSE`](./LICENSE) — Licencia de software libre **GNU General Public License v3.0 (GPLv3)**.
+
+## 📄 Licencia
+
+Este proyecto es software libre y se distribuye bajo los términos de la licencia **[GNU General Public License v3.0 (GPL-3.0)](./LICENSE)**.  
+Copyright © 2026 **Santiago De la Mora**.

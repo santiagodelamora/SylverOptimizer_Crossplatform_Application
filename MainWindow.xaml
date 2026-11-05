@@ -4,9 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="WinOptimizer Pro — Optimización de RAM, Caché y CPU para Windows 11"
-        Width="1180" Height="820"
-        MinWidth="980" MinHeight="700"
+        Title="WinOptimizer — Optimización de RAM, Caché y CPU para Windows 11"
+        Width="1150" Height="690"
+        MinWidth="920" MinHeight="600"
+        ResizeMode="CanResize"
+        WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource WindowBgBrush}"
         Foreground="{DynamicResource TextPrimaryBrush}"
@@ -134,7 +136,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid Margin="20,16,20,16">
+    <Grid Margin="16,10,16,12">
         <Grid.RowDefinitions>
             <!-- Fila 0: Barra Superior Global -->
             <RowDefinition Height="Auto"/>
@@ -145,7 +147,7 @@
         <!-- ================================================================ -->
         <!-- FILA 0: CABECERA GLOBAL Y NAVEGACIÓN                             -->
         <!-- ================================================================ -->
-        <Grid Grid.Row="0" Margin="0,0,0,14">
+        <Grid Grid.Row="0" Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -158,22 +160,7 @@
                                Foreground="{DynamicResource AccentPrimaryButtonFgBrush}"/>
                 </Border>
                 <StackPanel VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="WinOptimizer Pro" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                        <Border Background="{DynamicResource AccentSecondaryBgBrush}"
-                                BorderBrush="{DynamicResource AccentSecondaryBorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="5"
-                                Padding="7,2"
-                                Margin="10,0,0,0"
-                                VerticalAlignment="Center">
-                            <TextBlock x:Name="ActiveThemeHeaderBadge"
-                                       Text="🎨 Esmeralda Cyber"
-                                       FontSize="10.5"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource AccentSecondaryFgBrush}"/>
-                        </Border>
-                    </StackPanel>
+                    <TextBlock Text="WinOptimizer" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
                     <TextBlock Text="Monitor de Hardware, Liberador de RAM y Limpiador de Caché para Windows 11"
                                FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"/>
                 </StackPanel>
@@ -250,8 +237,8 @@
                     Background="{DynamicResource BannerGradientBrush}"
                     BorderBrush="{DynamicResource BannerBorderBrush}"
                     BorderThickness="1"
-                    Padding="20,14"
-                    Margin="0,0,0,14">
+                    Padding="18,10"
+                    Margin="0,0,0,10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -308,10 +295,10 @@
             </Border>
 
             <!-- FILA 1: MONITORES EN TIEMPO REAL (RAM & CPU) -->
-            <Grid Grid.Row="1" Margin="0,0,0,14">
+            <Grid Grid.Row="1" Margin="0,0,0,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="14"/>
+                    <ColumnDefinition Width="12"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
@@ -321,7 +308,7 @@
                         BorderBrush="{DynamicResource CardBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="12"
-                        Padding="18,14">
+                        Padding="16,10">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -331,13 +318,14 @@
                         </Grid.RowDefinitions>
 
                         <!-- Cabecera RAM -->
-                        <Grid Grid.Row="0" Margin="0,0,0,10">
-                            <StackPanel Orientation="Horizontal">
+                        <Grid Grid.Row="0" MinHeight="22" Margin="0,0,0,10">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <TextBlock Text="MEMORIA RAM FÍSICA &amp; CACHÉ" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}"/>
                             </StackPanel>
                             <TextBlock x:Name="RamTotalHeaderLabel"
                                        Text="0.0 GB Totales"
                                        HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
                                        FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource AccentGreenBrush}"/>
                         </Grid>
 
@@ -448,7 +436,7 @@
                         BorderBrush="{DynamicResource CardBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="12"
-                        Padding="18,14">
+                        Padding="16,10">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -458,14 +446,71 @@
                         </Grid.RowDefinitions>
 
                         <!-- Cabecera CPU -->
-                        <Grid Grid.Row="0" Margin="0,0,0,10">
-                            <TextBlock Text="USO DE PROCESADOR (CPU) &amp; CACHÉ DEL SISTEMA" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}"/>
-                            <TextBlock x:Name="CpuModelHeaderLabel"
-                                       Text="CPU"
-                                       HorizontalAlignment="Right"
-                                       MaxWidth="270"
-                                       TextTrimming="CharacterEllipsis"
-                                       FontSize="11.5" FontWeight="SemiBold" Foreground="{DynamicResource AccentCyanBrush}"/>
+                        <Grid Grid.Row="0" MinHeight="22" Margin="0,0,0,10">
+                            <TextBlock Text="USO DE PROCESADOR (CPU) &amp; CACHÉ DEL SISTEMA"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                            <Button x:Name="CpuInfoButton"
+                                    Style="{StaticResource CyanActionButton}"
+                                    Click="CpuInfoButton_Click"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Width="24"
+                                    Height="22"
+                                    Padding="0"
+                                    FontSize="12.5"
+                                    FontWeight="Bold"
+                                    Content="ⓘ"
+                                    ToolTip="Haz clic para ver el modelo completo del procesador"/>
+
+                            <Popup x:Name="CpuInfoPopup"
+                                   PlacementTarget="{Binding ElementName=CpuInfoButton}"
+                                   Placement="Bottom"
+                                   HorizontalOffset="-290"
+                                   VerticalOffset="6"
+                                   AllowsTransparency="True"
+                                   PopupAnimation="Fade"
+                                   StaysOpen="False">
+                                <Border Background="{DynamicResource CardBgBrush}"
+                                        BorderBrush="{DynamicResource AccentCyanBrush}"
+                                        BorderThickness="1.5"
+                                        CornerRadius="10"
+                                        Padding="14,10"
+                                        Width="314">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,4">
+                                            <TextBlock Text="🖥️ INFORMACIÓN DEL PROCESADOR"
+                                                       FontSize="10.5"
+                                                       FontWeight="Bold"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                            <TextBlock Text="✕"
+                                                       FontSize="11"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Center"
+                                                       Cursor="Hand"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                                       MouseLeftButtonUp="CloseCpuInfoPopup_MouseLeftButtonUp"/>
+                                        </Grid>
+                                        <TextBlock x:Name="CpuModelPopupText"
+                                                   Text="CPU"
+                                                   FontSize="13"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                                   Margin="0,0,0,4"/>
+                                        <TextBlock x:Name="CpuDetailsPopupText"
+                                                   Text="0 Núcleos Lógicos"
+                                                   FontSize="11.5"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource AccentCyanBrush}"/>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
                         </Grid>
 
                         <!-- Medidor Circular CPU + Gráfico en Tiempo Real -->
@@ -750,7 +795,7 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="⚙️ Configuración de WinOptimizer Pro"
+                            <TextBlock Text="⚙️ Configuración de WinOptimizer"
                                        FontSize="16"
                                        FontWeight="Bold"
                                        Foreground="{DynamicResource TextPrimaryBrush}"/>
@@ -808,7 +853,7 @@
                         <ItemsControl x:Name="ThemesItemsControl">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <UniformGrid Columns="3"/>
+                                    <UniformGrid Columns="4"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>

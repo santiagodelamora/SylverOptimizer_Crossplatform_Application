@@ -1,4 +1,4 @@
-#define MyAppName "WinOptimizer Pro"
+#define MyAppName "WinOptimizer"
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "Santiago De la Mora"
 #define MyAppURL "https://github.com/santiagodelamora/WinOptimizer_Desktop_Application"
@@ -20,6 +20,7 @@ PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=Output
 OutputBaseFilename=WinOptimizerPro_Setup_v{#MyAppVersion}
+LicenseFile=..\LICENSE
 SetupIconFile=..\Assets\app.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma2/ultra64
@@ -37,6 +38,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "..\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

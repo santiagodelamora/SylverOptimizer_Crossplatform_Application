@@ -8,10 +8,12 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
     <AssemblyName>WinOptimizerPro</AssemblyName>
-    <Product>WinOptimizer Pro</Product>
+    <Product>WinOptimizer</Product>
     <Version>1.0.0</Version>
     <Authors>Santiago De la Mora</Authors>
     <Description>Optimizador de RAM, Caché y Monitor de CPU para Windows 11</Description>
+    <Copyright>Copyright (C) 2026 Santiago De la Mora</Copyright>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
