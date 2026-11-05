@@ -40,6 +40,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        EnsureWindowFitsWorkArea();
+        SourceInitialized += (_, _) => EnsureWindowFitsWorkArea();
 
         _monitorService = new SystemMonitorService();
         _optimizerService = new OptimizerService();
@@ -103,6 +105,50 @@ public partial class MainWindow : Window
         {
             AdminElevateButton.Content = "🛡️ Elevar a Administrador (Standby List)";
             AdminElevateButton.ToolTip = "Reinicia la aplicación con permisos de Administrador para desbloquear el vaciado de la Standby List del kernel y Prefetch.";
+        }
+    }
+
+    private void EnsureWindowFitsWorkArea()
+    {
+        if (WindowState != WindowState.Normal)
+        {
+            return;
+        }
+
+        Rect workArea = SystemParameters.WorkArea;
+
+        if (Width > workArea.Width - 16)
+        {
+            Width = Math.Max(MinWidth, workArea.Width - 16);
+        }
+
+        if (Height > workArea.Height - 16)
+        {
+            Height = Math.Max(MinHeight, workArea.Height - 16);
+        }
+
+        if (!double.IsNaN(Top))
+        {
+            if (Top < workArea.Top)
+            {
+                Top = workArea.Top + 4;
+            }
+            else if (Top + Height > workArea.Bottom)
+            {
+                Top = Math.Max(workArea.Top, workArea.Bottom - Height);
+            }
+        }
+
+        if (!double.IsNaN(Left))
+        {
+            if (Left < workArea.Left)
+            {
+                Left = workArea.Left + 4;
+            }
+            else if (Left + Width > workArea.Right)
+            {
+                Left = Math.Max(workArea.Left, workArea.Right - Width);
+            }
         }
     }
 
