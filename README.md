@@ -1,7 +1,7 @@
 # ⚡ WinOptimizer — Optimización de RAM, Caché y CPU para Windows 11
 
 > 🌐 **Idioma / Language:** **🇪🇸 Español** | [🇺🇸 English](./README.en.md)  
-> 📖 **Documentación:** **[Manual de Usuario Detallado](./MANUAL_DE_USUARIO.md)**
+> 📖 **Documentación:** **[Manual de Usuario Detallado](./MANUAL_DE_USUARIO.md)** | **[Guía de Contribución](./CONTRIBUTING.md)**
 
 Aplicación de escritorio nativa con **interfaz gráfica (WPF / .NET 10)** en modo oscuro para **Windows 11**, diseñada para monitorear el hardware en tiempo real, liberar memoria RAM inactiva y limpiar cachés del sistema utilizando exclusivamente las APIs oficiales de Windows (`Win32` y `NT Native API`).
 
