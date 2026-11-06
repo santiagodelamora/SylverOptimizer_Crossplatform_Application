@@ -5,7 +5,7 @@ using System.IO;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
-namespace WinOptimizerPro.Services;
+namespace SylverOptimizer.Services;
 
 public sealed record RamOptimizationResult(
     bool Success,

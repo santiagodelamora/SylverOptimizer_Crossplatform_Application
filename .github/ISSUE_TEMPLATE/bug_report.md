@@ -1,6 +1,6 @@
 ---
 name: 🐛 Reporte de Error / Bug Report
-about: Reporta un fallo o comportamiento inesperado en WinOptimizer / Report a bug or unexpected behavior
+about: Reporta un fallo o comportamiento inesperado en SylverOptimizer / Report a bug or unexpected behavior
 title: "[BUG] "
 labels: bug
 assignees: ''
@@ -12,7 +12,7 @@ assignees: ''
 
 ## 🔄 Pasos para Reproducir / Steps to Reproduce
 
-1. Abrir **WinOptimizer**...
+1. Abrir **SylverOptimizer**...
 2. Hacer clic en...
 3. Observar el error...
 
@@ -23,7 +23,7 @@ assignees: ''
 ## 💻 Entorno del Sistema / System Environment
 
 - **Versión de Windows / Windows Version:** (ej. Windows 11 24H2 / Windows 10 22H2)
-- **Versión de WinOptimizer:** (ej. v1.0.0)
+- **Versión de SylverOptimizer:** (ej. v1.0.0)
 - **Modo de ejecución / Execution Mode:** [ ] Administrador / Admin  |  [ ] Usuario estándar / Standard User
 - **Tema activo / Active Theme:** (ej. Esmeralda Cyber / Modo Claro Cristal)
 

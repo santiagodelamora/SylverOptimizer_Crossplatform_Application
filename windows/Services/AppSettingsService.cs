@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows.Media;
 
-namespace WinOptimizerPro.Services;
+namespace SylverOptimizer.Services;
 
 public sealed class AppSettingsData
 {
@@ -98,8 +98,22 @@ public sealed class AppSettingsService
     public AppSettingsService()
     {
         string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        string folder = Path.Combine(appData, "WinOptimizerPro");
+        string folder = Path.Combine(appData, "SylverOptimizer");
         _settingsFilePath = Path.Combine(folder, "settings.json");
+
+        string legacyFilePath = Path.Combine(appData, "WinOptimizerPro", "settings.json");
+        if (!File.Exists(_settingsFilePath) && File.Exists(legacyFilePath))
+        {
+            try
+            {
+                Directory.CreateDirectory(folder);
+                File.Copy(legacyFilePath, _settingsFilePath, overwrite: false);
+            }
+            catch
+            {
+                // Ignorar errores al migrar configuración previa
+            }
+        }
 
         _themes = BuildThemes();
         Current = LoadSettings();

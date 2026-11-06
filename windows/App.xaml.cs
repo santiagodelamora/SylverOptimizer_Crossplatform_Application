@@ -1,8 +1,8 @@
-﻿using System.Configuration;
+using System.Configuration;
 using System.Data;
 using System.Windows;
 
-namespace WinOptimizerPro;
+namespace SylverOptimizer;
 
 /// <summary>
 /// Interaction logic for App.xaml

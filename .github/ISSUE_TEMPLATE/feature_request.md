@@ -1,6 +1,6 @@
 ---
 name: ✨ Solicitud de Función / Feature Request
-about: Propón una mejora, nueva métrica o función para WinOptimizer / Suggest an enhancement or new feature
+about: Propón una mejora, nueva métrica o función para SylverOptimizer / Suggest an enhancement or new feature
 title: "[FEAT] "
 labels: enhancement
 assignees: ''
@@ -12,7 +12,7 @@ assignees: ''
 
 ## 🎯 ¿Qué problema resuelve? / Problem Statement
 
-<!-- ¿Por qué sería útil para los usuarios de WinOptimizer? / Why would this be useful for WinOptimizer users? -->
+<!-- ¿Por qué sería útil para los usuarios de SylverOptimizer? / Why would this be useful for SylverOptimizer users? -->
 
 ## 🛠️ Propuesta Técnica o Visual (Opcional) / Technical or UI Proposal (Optional)
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
-namespace WinOptimizerPro.Services;
+namespace SylverOptimizer.Services;
 
 public sealed record SystemMetricsSnapshot(
     double CpuUsagePercent,

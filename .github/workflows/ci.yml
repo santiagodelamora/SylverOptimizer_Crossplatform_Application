@@ -1,4 +1,4 @@
-name: Build & Verify (Windows / .NET 10)
+name: Build & Verify (Windows & Android)
 
 on:
   push:
@@ -11,8 +11,8 @@ on:
       - estable
 
 jobs:
-  build:
-    name: Build WPF App (Release x64)
+  build-windows:
+    name: Build WPF App (Windows x64 / .NET 10)
     runs-on: windows-latest
 
     steps:
@@ -25,8 +25,33 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore dependencies / Restaurar dependencias
-        run: dotnet restore WinOptimizerPro.csproj
+        working-directory: windows
+        run: dotnet restore SylverOptimizer.csproj
 
       - name: Build Release / Compilar en modo Release
-        run: dotnet build WinOptimizerPro.csproj --configuration Release --no-restore
+        working-directory: windows
+        run: dotnet build SylverOptimizer.csproj --configuration Release --no-restore
+
+  build-android:
+    name: Build Android App (Kotlin / Jetpack Compose)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository / Descargar código
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17 / Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle 8.10.2 / Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Build Release APK / Compilar APK en modo Release
+        working-directory: android
+        run: gradle assembleRelease
 

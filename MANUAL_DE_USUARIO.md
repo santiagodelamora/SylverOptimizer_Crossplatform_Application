@@ -1,8 +1,8 @@
-# 📖 Manual de Usuario — WinOptimizer
+# 📖 Manual de Usuario — SylverOptimizer
 
 > 🌐 **Idioma / Language:** **🇪🇸 Español** | [🇺🇸 English](./USER_MANUAL.en.md)
 
-Bienvenido al manual oficial de usuario de **WinOptimizer**, una herramienta nativa de monitoreo de hardware en tiempo real, optimización de memoria RAM y limpieza de caché del sistema diseñada para **Windows 10 y Windows 11 (x64)**.
+Bienvenido al manual oficial de usuario de **SylverOptimizer**, una herramienta nativa de monitoreo de hardware en tiempo real, optimización de memoria RAM y limpieza de caché del sistema diseñada para **Windows 10 y Windows 11 (x64)**.
 
 ---
 
@@ -23,10 +23,10 @@ Bienvenido al manual oficial de usuario de **WinOptimizer**, una herramienta nat
 
 ## 1. Introducción y Seguridad del Sistema
 
-**WinOptimizer** permite conocer en todo momento el estado de consumo de memoria y procesador de tu equipo, así como recuperar memoria RAM inactiva y espacio en disco ocupado por archivos temporales huérfanos.
+**SylverOptimizer** permite conocer en todo momento el estado de consumo de memoria y procesador de tu equipo, así como recuperar memoria RAM inactiva y espacio en disco ocupado por archivos temporales huérfanos.
 
 ### ¿Cómo funciona sin poner en riesgo tu PC?
-A diferencia de programas antiguos que utilizaban trucos inestables (como saturar la memoria artificialmente para forzar el archivo de paginación), **WinOptimizer** se comunica directamente con el núcleo (*kernel*) de Windows mediante las APIs oficiales documentadas por Microsoft:
+A diferencia de programas antiguos que utilizaban trucos inestables (como saturar la memoria artificialmente para forzar el archivo de paginación), **SylverOptimizer** se comunica directamente con el núcleo (*kernel*) de Windows mediante las APIs oficiales documentadas por Microsoft:
 - **`EmptyWorkingSet` (`psapi.dll`)**: Ordena a Windows recortar únicamente las páginas de memoria que los procesos ya no están utilizando activamente, sin cerrar ninguna aplicación ni borrar datos no guardados.
 - **`NtSetSystemInformation` (`ntdll.dll`)**: Vacía de forma nativa las listas de páginas en espera (*Standby List* y *Modified Page List*) del administrador de memoria de Windows.
 - **Respeto de bloqueos NTFS**: Durante la limpieza de disco, cualquier archivo temporal que esté siendo utilizado por Windows o por un programa abierto es omitido automáticamente de forma segura.
@@ -36,9 +36,9 @@ A diferencia de programas antiguos que utilizaban trucos inestables (como satura
 ## 2. Instalación y Modos de Ejecución
 
 ### Formas de abrir la aplicación
-1. **Mediante el Instalador de Windows**: Ejecuta `Installer/Output/WinOptimizerPro_Setup_v1.0.0.exe` para instalar la aplicación con accesos directos en el Menú Inicio y Escritorio.
-2. **Modo Portable (Sin instalación)**: Ejecuta directamente `publish/WinOptimizerPro.exe` (incluye el entorno de `.NET 10` integrado).
-3. **Acceso Rápido de Desarrollo**: Haz doble clic sobre `Ejecutar_WinOptimizerPro.bat` en la raíz del proyecto.
+1. **Mediante el Instalador de Windows**: Ejecuta `windows/Installer/Output/SylverOptimizer_Setup_v1.0.0.exe` para instalar la aplicación con accesos directos en el Menú Inicio y Escritorio.
+2. **Modo Portable (Sin instalación)**: Ejecuta directamente `windows/publish/SylverOptimizer.exe` (incluye el entorno de `.NET 10` integrado).
+3. **Acceso Rápido de Desarrollo**: Haz doble clic sobre `windows/Ejecutar_SylverOptimizer.bat`.
 
 ### Modo Usuario Estándar vs. Modo Administrador
 
@@ -59,7 +59,7 @@ A diferencia de programas antiguos que utilizaban trucos inestables (como satura
 
 En la parte superior de la ventana encontrarás los controles globales de la aplicación:
 
-1. **Título de la Aplicación**: Muestra el icono y el nombre oficial de **WinOptimizer** junto con su descripción.
+1. **Título de la Aplicación**: Muestra el icono y el nombre oficial de **SylverOptimizer** junto con su descripción.
 2. **Selector de Vista (`📊 Panel Principal` | `⚙️ Configuración`)**: Permite alternar instantáneamente entre la pantalla de monitoreo/optimización y el panel de personalización y ajustes.
 3. **Interruptor Rápido `Auto-liberar RAM (>85%)`**: Activa o desactiva con un solo clic la optimización automática en segundo plano cuando el uso de memoria RAM alcance el umbral configurado.
 4. **Botón de Estado de Privilegios**:
@@ -197,7 +197,7 @@ Puedes cambiar la paleta de colores completa de la aplicación en tiempo real ha
 
 ### 💾 4. Persistencia y Botón `🔄 Restaurar Predeterminados`
 - Tu configuración se almacena automáticamente en formato JSON dentro de tu carpeta de usuario local:
-  `%LocalAppData%\WinOptimizerPro\settings.json`
+  `%LocalAppData%\SylverOptimizer\settings.json`
 - Si deseas volver al tema **Esmeralda Cyber** y a los valores de fábrica (`85%` de umbral, intervalo de `1.0s`, DNS y Standby activos), pulsa el botón **`🔄 Restaurar Predeterminados`** en la parte superior de Configuración.
 
 ---
@@ -208,7 +208,7 @@ Puedes cambiar la paleta de colores completa de la aplicación en tiempo real ha
 **No.** La función `EmptyWorkingSet` nunca cierra procesos ni borra información activa. Únicamente le indica al administrador de memoria de Windows que mueva las páginas de memoria que llevan tiempo sin usarse fuera del conjunto de trabajo inmediato, dejando esa RAM física libre para las aplicaciones que sí estás utilizando ahora.
 
 ### ❓ ¿Por qué al limpiar la caché aparece que algunos archivos "en uso" fueron omitidos?
-Es el comportamiento normal y seguro de Windows. Aplicaciones abiertas (como tu navegador, Discord, Visual Studio o servicios de Windows) mantienen abiertos ciertos archivos temporales mientras funcionan. **WinOptimizer** respeta esos bloqueos para garantizar que ningún programa abierto sufra errores.
+Es el comportamiento normal y seguro de Windows. Aplicaciones abiertas (como tu navegador, Discord, Visual Studio o servicios de Windows) mantienen abiertos ciertos archivos temporales mientras funcionan. **SylverOptimizer** respeta esos bloqueos para garantizar que ningún programa abierto sufra errores.
 
 ### ❓ ¿Cuándo conviene usar "Purgar Caché RAM (Standby)"?
 Windows 11 suele guardar en la *Standby List* archivos de programas que ya cerraste por si vuelves a abrirlos. En ocasiones, esta caché no se libera lo suficientemente rápido al abrir un juego pesado o software de edición, provocando pequeños tirones (*stuttering*). Purgar la *Standby List* como Administrador antes de iniciar una tarea pesada deja toda esa memoria inmediatamente libre.
