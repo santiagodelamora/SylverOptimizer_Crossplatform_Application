@@ -39,6 +39,17 @@ publish/
 # Inno Setup compiled installers (distributed via GitHub Releases)
 Installer/Output/
 
+# Android / Gradle build artifacts
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+*.apk
+*.aab
+*.ap_
+*.dex
+
 # NuGet Packages
 *.nupkg
 *.snupkg

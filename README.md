@@ -1,15 +1,16 @@
-# ⚡ SylverOptimizer — Optimización de RAM, Caché y CPU para Windows 11
+# ⚡ SylverOptimizer — Optimización de RAM, Caché y CPU para Windows 11 & Android
 
 > 🌐 **Idioma / Language:** **🇪🇸 Español** | [🇺🇸 English](./README.en.md)  
 > 📖 **Documentación:** **[Manual de Usuario Detallado](./MANUAL_DE_USUARIO.md)** | **[Guía de Contribución](./CONTRIBUTING.md)**
 
-Aplicación de escritorio nativa con **interfaz gráfica (WPF / .NET 10)** en modo oscuro para **Windows 11**, diseñada para monitorear el hardware en tiempo real, liberar memoria RAM inactiva y limpiar cachés del sistema utilizando exclusivamente las APIs oficiales de Windows (`Win32` y `NT Native API`).
+Suite de optimización y telemetría de hardware en tiempo real con versiones **100% nativas** para **Windows 10/11 (`C# / WPF / .NET 10`)** y **Android (`Kotlin / Jetpack Compose`)**, diseñada para monitorear memoria RAM y procesador, liberar procesos en segundo plano y limpiar cachés del sistema utilizando exclusivamente APIs oficiales de cada sistema operativo.
 
-## 📦 Instalación Directa (Windows 10 / 11 x64)
+## 📦 Instalación Directa (Windows x64 & Android APK)
 
-Puedes descargar e instalar la aplicación directamente desde la sección oficial de **GitHub Releases** (no requiere tener .NET instalado, ya que es autocontenido):
+Puedes descargar e instalar ambas versiones directamente desde la sección oficial de **GitHub Releases**:
 
-- 👉 **[Descargar `SylverOptimizer_Setup_v1.0.0.exe` (Último Release)](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/SylverOptimizer_Setup_v1.0.0.exe)**
+- 🖥️ **Windows 10 / 11 (x64):** **[Descargar `SylverOptimizer_Setup_v1.0.0.exe` (Instalador Autocontenido)](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/SylverOptimizer_Setup_v1.0.0.exe)**
+- 📱 **Android 8.0+ (APK Nativo):** **[Descargar `SylverOptimizer_Android_v1.0.0.apk`](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/SylverOptimizer_Android_v1.0.0.apk)**
 - 📋 **[Ver todas las versiones en GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)**
 
 ## ✨ Características Principales
@@ -34,26 +35,33 @@ Puedes descargar e instalar la aplicación directamente desde la sección oficia
 
 ## 🛠️ Compilación desde el Código Fuente
 
+### 🖥️ Versión de Escritorio (Windows / .NET 10)
 ```powershell
 # Compilar en modo Release
-dotnet build --configuration Release
+dotnet build SylverOptimizer.csproj --configuration Release
 
 # Ejecutar la aplicación
 dotnet run --configuration Release
 ```
-
 - Para ejecutar la app rápidamente: [`Ejecutar_SylverOptimizer.bat`](./Ejecutar_SylverOptimizer.bat)
 - Para volver a generar el instalador con **Inno Setup 6**: [`Crear_Instalador.bat`](./Crear_Instalador.bat)
 
+### 📱 Versión Móvil Nativa (Android / Kotlin + Jetpack Compose)
+```powershell
+cd android
+gradle assembleRelease
+```
+- El proyecto Android se encuentra en la carpeta [`android/`](./android) y puede abrirse directamente en **Android Studio** (JDK 17+, Android SDK 35).
+
 ## 📂 Estructura del Proyecto
 
-- `Assets/app.ico` — Icono de la aplicación y del instalador.
+- `Assets/app.ico` — Icono de la aplicación y del instalador de Windows.
 - `Installer/SylverOptimizer.iss` — Script de configuración del instalador para Inno Setup 6 (distribuido en [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
-- `Services/NativeMethods.cs` — Declaraciones P/Invoke (`psapi.dll`, `kernel32.dll`, `ntdll.dll`, `advapi32.dll`).
-- `Services/SystemMonitorService.cs` — Telemetría de CPU, RAM, caché y procesos en tiempo real.
-- `Services/OptimizerService.cs` — Motor de liberación de RAM, purga de Standby List y limpieza de caché de disco/DNS.
-- `Services/AppSettingsService.cs` — Gestión de temas de color dinámicos y persistencia de configuración en JSON.
-- `MainWindow.xaml` / `MainWindow.xaml.cs` — Interfaz gráfica con paneles de monitoreo, configuración, gráficos y controles interactivos.
+- `Services/` — Servicios nativos de Windows (`NativeMethods.cs`, `SystemMonitorService.cs`, `OptimizerService.cs`, `AppSettingsService.cs`).
+- `MainWindow.xaml` / `MainWindow.xaml.cs` — Interfaz gráfica WPF para Windows 10/11.
+- `android/` — Aplicación nativa para Android escrita en **Kotlin + Jetpack Compose**:
+  - `android/app/src/main/java/com/sylveroptimizer/android/services/` — Servicios equivalentes para Android (`SystemMonitorService.kt`, `OptimizerService.kt`, `AppSettingsService.kt`).
+  - `android/app/src/main/java/com/sylveroptimizer/android/ui/` — Interfaz móvil adaptable en Jetpack Compose con medidores circulares, gráficas de 60s y los 8 temas de color (`SylverOptimizerScreen.kt`, `TelemetryWidgets.kt`).
 - [`LICENSE`](./LICENSE) — Licencia de software libre **GNU General Public License v3.0 (GPLv3)**.
 
 ## 📄 Licencia

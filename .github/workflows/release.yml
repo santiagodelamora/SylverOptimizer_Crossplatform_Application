@@ -1,4 +1,4 @@
-name: Release Installer (Inno Setup 6)
+name: Release Installers (Windows .exe & Android .apk)
 
 on:
   push:
@@ -10,8 +10,8 @@ permissions:
   contents: write
 
 jobs:
-  release:
-    name: Build & Publish Installer (.exe)
+  release-windows:
+    name: Build & Publish Windows Installer (.exe)
     runs-on: windows-latest
 
     steps:
@@ -36,15 +36,53 @@ jobs:
           }
           & $iscc "Installer\SylverOptimizer.iss"
 
-      - name: Upload Installer Artifact / Subir artefacto de compilación
+      - name: Upload Windows Installer Artifact / Subir instalador de Windows
         uses: actions/upload-artifact@v4
         with:
-          name: SylverOptimizer-Installer
+          name: SylverOptimizer-Windows-Installer
           path: Installer/Output/*.exe
 
-      - name: Create GitHub Release / Publicar en GitHub Releases
+      - name: Attach Windows Installer to GitHub Release / Publicar .exe en GitHub Releases
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: Installer/Output/*.exe
+          generate_release_notes: true
+
+  release-android:
+    name: Build & Publish Android App (.apk)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository / Descargar código
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17 / Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle 8.10.2 / Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Build Release APK / Compilar APK en modo Release
+        working-directory: android
+        run: |
+          gradle assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/SylverOptimizer_Android_v1.0.0.apk
+
+      - name: Upload Android APK Artifact / Subir APK de Android
+        uses: actions/upload-artifact@v4
+        with:
+          name: SylverOptimizer-Android-APK
+          path: android/app/build/outputs/apk/release/SylverOptimizer_Android_*.apk
+
+      - name: Attach Android APK to GitHub Release / Publicar .apk en GitHub Releases
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: android/app/build/outputs/apk/release/SylverOptimizer_Android_*.apk
           generate_release_notes: true
