@@ -36,9 +36,9 @@ Unlike legacy memory boosters that used unstable workarounds (such as allocating
 ## 2. Installation & Execution Modes
 
 ### Ways to launch the application
-1. **Windows Installer**: Run `Installer/Output/SylverOptimizer_Setup_v1.0.0.exe` to install the app with Start Menu and Desktop shortcuts.
-2. **Portable Mode (No installation required)**: Run `publish/SylverOptimizer.exe` directly (bundles the `.NET 10` runtime).
-3. **Quick Launch Script**: Double-click `Ejecutar_SylverOptimizer.bat` in the project root folder.
+1. **Windows Installer**: Run `windows/Installer/Output/SylverOptimizer_Setup_v1.0.0.exe` to install the app with Start Menu and Desktop shortcuts.
+2. **Portable Mode (No installation required)**: Run `windows/publish/SylverOptimizer.exe` directly (bundles the `.NET 10` runtime).
+3. **Quick Launch Script**: Double-click `windows/Ejecutar_SylverOptimizer.bat`.
 
 ### Standard User Mode vs. Administrator Mode
 

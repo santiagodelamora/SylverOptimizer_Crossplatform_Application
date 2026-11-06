@@ -24,10 +24,12 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Publish Single-File Win-x64 / Publicar ejecutable autocontenido
+        working-directory: windows
         run: |
           dotnet publish SylverOptimizer.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
 
       - name: Compile Installer with Inno Setup 6 / Compilar instalador .exe
+        working-directory: windows
         shell: pwsh
         run: |
           $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
@@ -40,13 +42,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SylverOptimizer-Windows-Installer
-          path: Installer/Output/*.exe
+          path: windows/Installer/Output/*.exe
 
       - name: Attach Windows Installer to GitHub Release / Publicar .exe en GitHub Releases
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: Installer/Output/*.exe
+          files: windows/Installer/Output/*.exe
           generate_release_notes: true
 
   release-android:

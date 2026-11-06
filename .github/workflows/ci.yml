@@ -25,9 +25,11 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore dependencies / Restaurar dependencias
+        working-directory: windows
         run: dotnet restore SylverOptimizer.csproj
 
       - name: Build Release / Compilar en modo Release
+        working-directory: windows
         run: dotnet build SylverOptimizer.csproj --configuration Release --no-restore
 
   build-android:

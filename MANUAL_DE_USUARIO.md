@@ -36,9 +36,9 @@ A diferencia de programas antiguos que utilizaban trucos inestables (como satura
 ## 2. Instalación y Modos de Ejecución
 
 ### Formas de abrir la aplicación
-1. **Mediante el Instalador de Windows**: Ejecuta `Installer/Output/SylverOptimizer_Setup_v1.0.0.exe` para instalar la aplicación con accesos directos en el Menú Inicio y Escritorio.
-2. **Modo Portable (Sin instalación)**: Ejecuta directamente `publish/SylverOptimizer.exe` (incluye el entorno de `.NET 10` integrado).
-3. **Acceso Rápido de Desarrollo**: Haz doble clic sobre `Ejecutar_SylverOptimizer.bat` en la raíz del proyecto.
+1. **Mediante el Instalador de Windows**: Ejecuta `windows/Installer/Output/SylverOptimizer_Setup_v1.0.0.exe` para instalar la aplicación con accesos directos en el Menú Inicio y Escritorio.
+2. **Modo Portable (Sin instalación)**: Ejecuta directamente `windows/publish/SylverOptimizer.exe` (incluye el entorno de `.NET 10` integrado).
+3. **Acceso Rápido de Desarrollo**: Haz doble clic sobre `windows/Ejecutar_SylverOptimizer.bat`.
 
 ### Modo Usuario Estándar vs. Modo Administrador
 

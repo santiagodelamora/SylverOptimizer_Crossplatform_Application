@@ -35,18 +35,20 @@ You can download and install both versions directly from the official **GitHub R
 
 ## 🛠️ Building from Source
 
-### 🖥️ Desktop Version (Windows / .NET 10)
+### 🖥️ Desktop Version (`windows/` — Windows / .NET 10)
 ```powershell
+cd windows
+
 # Build in Release mode
 dotnet build SylverOptimizer.csproj --configuration Release
 
 # Run the application
 dotnet run --configuration Release
 ```
-- Quick-launch script: [`Ejecutar_SylverOptimizer.bat`](./Ejecutar_SylverOptimizer.bat)
-- Rebuild the **Inno Setup 6** installer: [`Crear_Instalador.bat`](./Crear_Instalador.bat)
+- Quick-launch script: [`windows/Ejecutar_SylverOptimizer.bat`](./windows/Ejecutar_SylverOptimizer.bat)
+- Rebuild the **Inno Setup 6** installer: [`windows/Crear_Instalador.bat`](./windows/Crear_Instalador.bat)
 
-### 📱 Native Mobile Version (Android / Kotlin + Jetpack Compose)
+### 📱 Native Mobile Version (`android/` — Android / Kotlin + Jetpack Compose)
 ```powershell
 cd android
 gradle assembleRelease
@@ -55,10 +57,11 @@ gradle assembleRelease
 
 ## 📂 Project Structure
 
-- `Assets/app.ico` — Custom Windows application and installer icon.
-- `Installer/SylverOptimizer.iss` — Inno Setup 6 installer script (distributed via [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
-- `Services/` — Native Windows services (`NativeMethods.cs`, `SystemMonitorService.cs`, `OptimizerService.cs`, `AppSettingsService.cs`).
-- `MainWindow.xaml` / `MainWindow.xaml.cs` — Themeable WPF GUI for Windows 10/11.
+- `windows/` — Native Windows 10/11 desktop application (**C# / WPF / .NET 10**):
+  - `windows/Assets/app.ico` — Custom Windows application and installer icon.
+  - `windows/Installer/SylverOptimizer.iss` — Inno Setup 6 installer script (distributed via [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
+  - `windows/Services/` — Native Windows services (`NativeMethods.cs`, `SystemMonitorService.cs`, `OptimizerService.cs`, `AppSettingsService.cs`).
+  - `windows/MainWindow.xaml` / `windows/MainWindow.xaml.cs` — Themeable WPF GUI for Windows 10/11.
 - `android/` — Native Android application written in **Kotlin + Jetpack Compose**:
   - `android/app/src/main/java/com/sylveroptimizer/android/services/` — Android telemetry, optimization, and theme services (`SystemMonitorService.kt`, `OptimizerService.kt`, `AppSettingsService.kt`).
   - `android/app/src/main/java/com/sylveroptimizer/android/ui/` — Jetpack Compose dashboard with circular gauges, 60s history charts, and 8 color themes (`SylverOptimizerScreen.kt`, `TelemetryWidgets.kt`).

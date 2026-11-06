@@ -58,13 +58,15 @@ ES: Agrega las opciones de intervalo de telemetría de 0.5s, 1.0s y 2.0s en el p
 - **Sistema Operativo:** Windows 10 o Windows 11 (x64).
 - **SDK:** [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (`net10.0-windows` con soporte para WPF).
 - **IDE recomendado:** Visual Studio 2022/2026, JetBrains Rider o VS Code (con extensión C# Dev Kit).
-- **Opcional (para generar instalador):** [Inno Setup 6](https://jrsoftware.org/isinfo.php) para compilar `Installer/SylverOptimizer.iss`.
+- **Opcional (para generar instalador):** [Inno Setup 6](https://jrsoftware.org/isinfo.php) para compilar `windows/Installer/SylverOptimizer.iss`.
 
 ### 4. Compilación y Pruebas Locales
 
 Antes de abrir un Pull Request, verifica que el proyecto compile sin errores ni advertencias en modo `Release`:
 
 ```powershell
+cd windows
+
 # Restaurar dependencias
 dotnet restore
 
@@ -78,8 +80,8 @@ dotnet run --configuration Release
 ### 5. Estándares de Código y Diseño
 
 - **Formato:** Respeta las reglas definidas en [`.editorconfig`](./.editorconfig) (indentación de 4 espacios en C# y XAML, codificación UTF-8).
-- **APIs Nativas (`P/Invoke`):** Cualquier llamada nueva a `kernel32.dll`, `psapi.dll`, `ntdll.dll` o `advapi32.dll` debe declararse en [`Services/NativeMethods.cs`](./Services/NativeMethods.cs) manejando adecuadamente permisos e impidiendo bloqueos en el hilo de interfaz gráfica (UI Thread).
-- **Temas Dinámicos:** Si agregas controles visuales en [`MainWindow.xaml`](./MainWindow.xaml), utiliza recursos dinámicos (`{DynamicResource ...}`) para que sean compatibles con los **8 temas de color** gestionados por [`Services/AppSettingsService.cs`](./Services/AppSettingsService.cs).
+- **APIs Nativas (`P/Invoke`):** Cualquier llamada nueva a `kernel32.dll`, `psapi.dll`, `ntdll.dll` o `advapi32.dll` debe declararse en [`windows/Services/NativeMethods.cs`](./windows/Services/NativeMethods.cs) manejando adecuadamente permisos e impidiendo bloqueos en el hilo de interfaz gráfica (UI Thread).
+- **Temas Dinámicos:** Si agregas controles visuales en [`windows/MainWindow.xaml`](./windows/MainWindow.xaml) o en [`android/`](./android), utiliza recursos dinámicos para que sean compatibles con los **8 temas de color** gestionados por [`windows/Services/AppSettingsService.cs`](./windows/Services/AppSettingsService.cs) y [`android/app/src/main/java/com/sylveroptimizer/android/services/AppSettingsService.kt`](./android/app/src/main/java/com/sylveroptimizer/android/services/AppSettingsService.kt).
 - **Documentación Bilingüe:** Si tu cambio modifica la interfaz o añade una funcionalidad visible para el usuario, actualiza tanto la documentación en español ([`README.md`](./README.md), [`MANUAL_DE_USUARIO.md`](./MANUAL_DE_USUARIO.md)) como en inglés ([`README.en.md`](./README.en.md), [`USER_MANUAL.en.md`](./USER_MANUAL.en.md)).
 - **Licencia (`GNU GPLv3`):** Al enviar una contribución a este repositorio, aceptas que tu código sea distribuido bajo los términos de la licencia **[GNU General Public License v3.0](./LICENSE)**.
 
@@ -130,13 +132,15 @@ ES: <Detailed explanation in Spanish of what changed and why.>
 - **Operating System:** Windows 10 or Windows 11 (x64).
 - **SDK:** [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (`net10.0-windows` with WPF workload).
 - **Recommended IDE:** Visual Studio 2022/2026, JetBrains Rider, or VS Code (with C# Dev Kit).
-- **Optional (for building the installer):** [Inno Setup 6](https://jrsoftware.org/isinfo.php) to compile `Installer/SylverOptimizer.iss`.
+- **Optional (for building the installer):** [Inno Setup 6](https://jrsoftware.org/isinfo.php) to compile `windows/Installer/SylverOptimizer.iss`.
 
 ### 4. Building & Testing Locally
 
 Before submitting a Pull Request, ensure the application builds cleanly in `Release` configuration:
 
 ```powershell
+cd windows
+
 # Restore dependencies
 dotnet restore
 
@@ -150,8 +154,8 @@ dotnet run --configuration Release
 ### 5. Coding & UI Standards
 
 - **Formatting:** Follow the rules in [`.editorconfig`](./.editorconfig) (4-space indentation for C# and XAML, UTF-8 encoding).
-- **Native Win32/NT APIs (`P/Invoke`):** Place all native signatures in [`Services/NativeMethods.cs`](./Services/NativeMethods.cs), handle privilege/access exceptions gracefully, and keep heavy operations off the WPF UI thread.
-- **Dynamic Color Themes:** Any new UI elements in [`MainWindow.xaml`](./MainWindow.xaml) must use `{DynamicResource ...}` bindings so they adapt seamlessly to all **8 color themes** defined in [`Services/AppSettingsService.cs`](./Services/AppSettingsService.cs).
+- **Native Win32/NT APIs (`P/Invoke`):** Place all native signatures in [`windows/Services/NativeMethods.cs`](./windows/Services/NativeMethods.cs), handle privilege/access exceptions gracefully, and keep heavy operations off the WPF UI thread.
+- **Dynamic Color Themes:** Any new UI elements in [`windows/MainWindow.xaml`](./windows/MainWindow.xaml) or [`android/`](./android) must adapt seamlessly to all **8 color themes** defined in [`windows/Services/AppSettingsService.cs`](./windows/Services/AppSettingsService.cs) and [`android/app/src/main/java/com/sylveroptimizer/android/services/AppSettingsService.kt`](./android/app/src/main/java/com/sylveroptimizer/android/services/AppSettingsService.kt).
 - **Bilingual Documentation:** User-facing changes should be reflected in both the Spanish ([`README.md`](./README.md), [`MANUAL_DE_USUARIO.md`](./MANUAL_DE_USUARIO.md)) and English ([`README.en.md`](./README.en.md), [`USER_MANUAL.en.md`](./USER_MANUAL.en.md)) documentation.
 - **License (`GNU GPLv3`):** By submitting a contribution to this repository, you agree that your work will be licensed under the **[GNU General Public License v3.0](./LICENSE)**.
 

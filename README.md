@@ -35,18 +35,20 @@ Puedes descargar e instalar ambas versiones directamente desde la sección ofici
 
 ## 🛠️ Compilación desde el Código Fuente
 
-### 🖥️ Versión de Escritorio (Windows / .NET 10)
+### 🖥️ Versión de Escritorio (`windows/` — Windows / .NET 10)
 ```powershell
+cd windows
+
 # Compilar en modo Release
 dotnet build SylverOptimizer.csproj --configuration Release
 
 # Ejecutar la aplicación
 dotnet run --configuration Release
 ```
-- Para ejecutar la app rápidamente: [`Ejecutar_SylverOptimizer.bat`](./Ejecutar_SylverOptimizer.bat)
-- Para volver a generar el instalador con **Inno Setup 6**: [`Crear_Instalador.bat`](./Crear_Instalador.bat)
+- Para ejecutar la app rápidamente: [`windows/Ejecutar_SylverOptimizer.bat`](./windows/Ejecutar_SylverOptimizer.bat)
+- Para volver a generar el instalador con **Inno Setup 6**: [`windows/Crear_Instalador.bat`](./windows/Crear_Instalador.bat)
 
-### 📱 Versión Móvil Nativa (Android / Kotlin + Jetpack Compose)
+### 📱 Versión Móvil Nativa (`android/` — Android / Kotlin + Jetpack Compose)
 ```powershell
 cd android
 gradle assembleRelease
@@ -55,10 +57,11 @@ gradle assembleRelease
 
 ## 📂 Estructura del Proyecto
 
-- `Assets/app.ico` — Icono de la aplicación y del instalador de Windows.
-- `Installer/SylverOptimizer.iss` — Script de configuración del instalador para Inno Setup 6 (distribuido en [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
-- `Services/` — Servicios nativos de Windows (`NativeMethods.cs`, `SystemMonitorService.cs`, `OptimizerService.cs`, `AppSettingsService.cs`).
-- `MainWindow.xaml` / `MainWindow.xaml.cs` — Interfaz gráfica WPF para Windows 10/11.
+- `windows/` — Aplicación nativa de escritorio para Windows 10/11 (**C# / WPF / .NET 10**):
+  - `windows/Assets/app.ico` — Icono de la aplicación y del instalador de Windows.
+  - `windows/Installer/SylverOptimizer.iss` — Script de configuración del instalador para Inno Setup 6 (distribuido en [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
+  - `windows/Services/` — Servicios nativos de Windows (`NativeMethods.cs`, `SystemMonitorService.cs`, `OptimizerService.cs`, `AppSettingsService.cs`).
+  - `windows/MainWindow.xaml` / `windows/MainWindow.xaml.cs` — Interfaz gráfica WPF para Windows 10/11.
 - `android/` — Aplicación nativa para Android escrita en **Kotlin + Jetpack Compose**:
   - `android/app/src/main/java/com/sylveroptimizer/android/services/` — Servicios equivalentes para Android (`SystemMonitorService.kt`, `OptimizerService.kt`, `AppSettingsService.kt`).
   - `android/app/src/main/java/com/sylveroptimizer/android/ui/` — Interfaz móvil adaptable en Jetpack Compose con medidores circulares, gráficas de 60s y los 8 temas de color (`SylverOptimizerScreen.kt`, `TelemetryWidgets.kt`).

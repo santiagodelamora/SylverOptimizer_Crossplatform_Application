@@ -37,7 +37,7 @@ artifacts/
 publish/
 
 # Inno Setup compiled installers (distributed via GitHub Releases)
-Installer/Output/
+**/Installer/Output/
 
 # Android / Gradle build artifacts
 android/.gradle/
