@@ -9,9 +9,9 @@ Suite de optimización y telemetría de hardware en tiempo real con versiones **
 
 Puedes descargar e instalar ambas versiones directamente desde la sección oficial de **GitHub Releases**:
 
-- 🖥️ **Windows 10 / 11 (x64):** **[Descargar `SylverOptimizer_Setup_v1.0.0.exe` (Instalador Autocontenido)](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/SylverOptimizer_Setup_v1.0.0.exe)**
-- 📱 **Android 8.0+ (APK Nativo):** **[Descargar `SylverOptimizer_Android_v1.0.0.apk`](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/SylverOptimizer_Android_v1.0.0.apk)**
-- 📋 **[Ver todas las versiones en GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)**
+- 🖥️ **Windows 10 / 11 (x64):** **[Descargar `SylverOptimizer_Setup_v1.1.0.exe` (Instalador Autocontenido)](https://github.com/santiagodelamora/SylverOptimizer_Crossplatform_Application/releases/latest/download/SylverOptimizer_Setup_v1.1.0.exe)**
+- 📱 **Android 8.0+ (APK Nativo):** **[Descargar `SylverOptimizer_Android_v1.1.0.apk`](https://github.com/santiagodelamora/SylverOptimizer_Crossplatform_Application/releases/latest/download/SylverOptimizer_Android_v1.1.0.apk)**
+- 📋 **[Ver todas las versiones en GitHub Releases](https://github.com/santiagodelamora/SylverOptimizer_Crossplatform_Application/releases)**
 
 ## ✨ Características Principales
 
@@ -60,7 +60,7 @@ gradle assembleRelease
 
 - `windows/` — Aplicación nativa de escritorio para Windows 10/11 (**C# / WPF / .NET 10**):
   - `windows/Assets/app.ico` — Icono de la aplicación y del instalador de Windows.
-  - `windows/Installer/SylverOptimizer.iss` — Script de configuración del instalador para Inno Setup 6 (distribuido en [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
+  - `windows/Installer/SylverOptimizer.iss` — Script de configuración del instalador para Inno Setup 6 (distribuido en [GitHub Releases](https://github.com/santiagodelamora/SylverOptimizer_Crossplatform_Application/releases)).
   - `windows/Services/` — Servicios nativos de Windows (`NativeMethods.cs`, `SystemMonitorService.cs`, `OptimizerService.cs`, `AppSettingsService.cs`).
   - `windows/MainWindow.xaml` / `windows/MainWindow.xaml.cs` — Interfaz gráfica WPF para Windows 10/11.
 - `android/` — Aplicación nativa para Android escrita en **Kotlin + Jetpack Compose**:

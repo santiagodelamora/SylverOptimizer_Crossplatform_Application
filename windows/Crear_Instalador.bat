@@ -22,5 +22,5 @@ if exist "%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe" (
 )
 
 echo.
-echo Instalador generado correctamente en: Installer\Output\SylverOptimizer_Setup_v1.0.0.exe
+echo Instalador generado correctamente en: Installer\Output\SylverOptimizer_Setup_v1.1.0.exe
 pause

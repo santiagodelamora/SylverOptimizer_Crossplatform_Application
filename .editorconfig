@@ -28,6 +28,10 @@ dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 [*.{xaml,csproj,props,targets}]
 indent_size = 4
 
+# Archivos de código Kotlin y Gradle / Kotlin & Gradle source files
+[*.{kt,kts}]
+indent_size = 4
+
 # Archivos de configuración, GitHub Actions y JSON / YAML & JSON files
 [*.{yml,yaml,json}]
 indent_size = 2

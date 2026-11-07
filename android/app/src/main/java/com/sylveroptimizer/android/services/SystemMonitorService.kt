@@ -11,10 +11,11 @@ import android.content.pm.PackageManager
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Process
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Locale
 import kotlin.math.max
-import kotlin.math.roundToInt
 
 data class SystemMetricsSnapshot(
     val cpuUsagePercent: Double,
@@ -50,6 +51,45 @@ class SystemMonitorService(private val context: Context) {
     val deviceArchitecture: String = Build.SUPPORTED_ABIS.firstOrNull() ?: "arm64-v8a"
 
     private var lastCpuPercent: Double = 18.0
+    @Volatile
+    private var cachedActivePackageCount: Int = 24
+    @Volatile
+    private var lastPackageCountTimeMs: Long = 0L
+
+    fun invalidatePackageCache() {
+        lastPackageCountTimeMs = 0L
+    }
+
+    fun createInitialSnapshot(): SystemMetricsSnapshot {
+        val memInfo = ActivityManager.MemoryInfo()
+        activityManager.getMemoryInfo(memInfo)
+
+        val totalBytes = memInfo.totalMem.coerceAtLeast(1L)
+        val availBytes = memInfo.availMem.coerceAtLeast(0L)
+        val usedBytes = (totalBytes - availBytes).coerceAtLeast(0L)
+        val ramPercent = (usedBytes.toDouble() * 100.0 / totalBytes.toDouble()).coerceIn(0.0, 100.0)
+        val bytesPerGb = 1024.0 * 1024.0 * 1024.0
+
+        return SystemMetricsSnapshot(
+            cpuUsagePercent = lastCpuPercent,
+            ramUsagePercent = ramPercent,
+            totalRamGb = totalBytes / bytesPerGb,
+            usedRamGb = usedBytes / bytesPerGb,
+            availableRamGb = availBytes / bytesPerGb,
+            systemCacheGb = 0.0,
+            swapUsedGb = 0.0,
+            swapTotalGb = 0.0,
+            availableRamBytes = availBytes,
+            systemCacheBytes = 0L,
+            activePackageCount = cachedActivePackageCount,
+            threadCount = (logicalCores * 3),
+            batteryTempCelsius = 32.0
+        )
+    }
+
+    suspend fun getMetricsSnapshotAsync(): SystemMetricsSnapshot = withContext(Dispatchers.IO) {
+        getMetricsSnapshot()
+    }
 
     fun hasUsageStatsPermission(): Boolean {
         return try {
@@ -90,7 +130,7 @@ class SystemMonitorService(private val context: Context) {
 
         val cpuPercent = readCpuUsagePercent()
         val batteryTemp = readBatteryTemperatureCelsius()
-        val threads = Thread.getAllStackTraces().size.coerceAtLeast(logicalCores * 3)
+        val threads = readActiveThreadCount()
         val activeApps = countActiveBackgroundPackages()
 
         val bytesPerGb = 1024.0 * 1024.0 * 1024.0
@@ -224,15 +264,19 @@ class SystemMonitorService(private val context: Context) {
         try {
             val cpuInfo = File("/proc/cpuinfo")
             if (cpuInfo.canRead()) {
-                cpuInfo.forEachLine { line ->
-                    if (line.startsWith("Hardware", ignoreCase = true) ||
-                        line.startsWith("model name", ignoreCase = true)
-                    ) {
-                        val value = line.substringAfter(':').trim()
-                        if (value.isNotBlank()) {
-                            return value
+                val detected = cpuInfo.useLines { lines ->
+                    lines.firstNotNullOfOrNull { line ->
+                        if (line.startsWith("Hardware", ignoreCase = true) ||
+                            line.startsWith("model name", ignoreCase = true)
+                        ) {
+                            line.substringAfter(':').trim().takeIf { it.isNotBlank() }
+                        } else {
+                            null
                         }
                     }
+                }
+                if (detected != null) {
+                    return detected
                 }
             }
         } catch (_: Exception) {
@@ -241,16 +285,45 @@ class SystemMonitorService(private val context: Context) {
         return "${Build.MANUFACTURER.replaceFirstChar { it.uppercase() }} ${Build.MODEL} (${Build.HARDWARE})"
     }
 
+    private fun readActiveThreadCount(): Int {
+        try {
+            val statusFile = File("/proc/self/status")
+            if (statusFile.canRead()) {
+                val parsed = statusFile.useLines { lines ->
+                    lines.firstNotNullOfOrNull { line ->
+                        if (line.startsWith("Threads:")) {
+                            line.substringAfter(':').trim().toIntOrNull()
+                        } else {
+                            null
+                        }
+                    }
+                }
+                if (parsed != null && parsed > 0) {
+                    return parsed.coerceAtLeast(logicalCores * 3)
+                }
+            }
+        } catch (_: Exception) {
+        }
+        return Thread.activeCount().coerceAtLeast(logicalCores * 3)
+    }
+
     private fun countActiveBackgroundPackages(): Int {
+        val now = System.currentTimeMillis()
+        if ((now - lastPackageCountTimeMs) in 1L..4_000L) {
+            return cachedActivePackageCount
+        }
         return try {
             val pm = context.packageManager
-            val apps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
-            apps.count { app ->
+            val apps = pm.getInstalledApplications(0)
+            val count = apps.count { app ->
                 (app.flags and ApplicationInfo.FLAG_STOPPED) == 0 &&
                     app.packageName != context.packageName
             }.coerceAtLeast(1)
+            cachedActivePackageCount = count
+            lastPackageCountTimeMs = now
+            count
         } catch (_: Exception) {
-            24
+            cachedActivePackageCount
         }
     }
 

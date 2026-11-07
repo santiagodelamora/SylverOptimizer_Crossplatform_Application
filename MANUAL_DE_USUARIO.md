@@ -42,7 +42,7 @@ A diferencia de programas antiguos que saturaban la memoria artificialmente, **S
 ## 2. Instalación y Modos de Ejecución (Windows y Android)
 
 ### 🖥️ En Windows 10 / 11 (x64)
-1. **Mediante el Instalador de Windows**: Descarga `SylverOptimizer_Setup_v1.0.0.exe` desde *GitHub Releases* (o desde `windows/Installer/Output/`) para instalar la aplicación con accesos directos en el Menú Inicio y Escritorio.
+1. **Mediante el Instalador de Windows**: Descarga `SylverOptimizer_Setup_v1.1.0.exe` desde *GitHub Releases* (o desde `windows/Installer/Output/`) para instalar la aplicación con accesos directos en el Menú Inicio y Escritorio.
 2. **Modo Portable (Sin instalación)**: Ejecuta directamente `windows/publish/SylverOptimizer.exe` (incluye el entorno de `.NET 10` integrado).
 3. **Acceso Rápido de Desarrollo**: Haz doble clic sobre `windows/Ejecutar_SylverOptimizer.bat`.
 
@@ -56,7 +56,7 @@ A diferencia de programas antiguos que saturaban la memoria artificialmente, **S
 | **Limpieza de `C:\Windows\Temp` y `C:\Windows\Prefetch`** | ⚠️ Parcial | ✅ **Habilitado** |
 
 ### 📱 En Android 8.0 o superior
-1. **Instalación directa (APK)**: Descarga `SylverOptimizer_Android_v1.0.0.apk` desde *GitHub Releases* en tu teléfono o tablet Android y ábrelo para instalarlo (acepta la instalación desde el navegador/archivos si es la primera vez).
+1. **Instalación directa (APK)**: Descarga `SylverOptimizer_Android_v1.1.0.apk` desde *GitHub Releases* en tu teléfono o tablet Android y ábrelo para instalarlo (acepta la instalación desde el navegador/archivos si es la primera vez).
 2. **Desde Android Studio**: Abre la carpeta `android/` en Android Studio y pulsa **Run (`▶`)** sobre un dispositivo físico o emulador.
 
 | Función en Android | Modo Estándar | Con Acceso a Uso (`🛡️`) |

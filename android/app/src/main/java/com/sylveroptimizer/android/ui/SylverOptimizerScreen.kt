@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -34,6 +35,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
@@ -55,6 +57,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.repeatOnLifecycle
 import com.sylveroptimizer.android.services.AppSettingsService
 import com.sylveroptimizer.android.services.ColorThemeDefinition
 import com.sylveroptimizer.android.services.OptimizerService
@@ -75,6 +80,7 @@ private const val HISTORY_MAX_POINTS = 60
 
 @Composable
 fun SylverOptimizerScreen(
+    lifecycle: Lifecycle,
     settingsService: AppSettingsService,
     monitorService: SystemMonitorService,
     optimizerService: OptimizerService,
@@ -88,7 +94,7 @@ fun SylverOptimizerScreen(
     var showSettingsView by remember { mutableStateOf(false) }
     var showCpuInfoDialog by remember { mutableStateOf(false) }
 
-    var snapshot by remember { mutableStateOf(monitorService.getMetricsSnapshot()) }
+    var snapshot by remember { mutableStateOf(monitorService.createInitialSnapshot()) }
     val ramHistory = remember { mutableStateListOf<Double>().apply { repeat(HISTORY_MAX_POINTS) { add(0.0) } } }
     val cpuHistory = remember { mutableStateListOf<Double>().apply { repeat(HISTORY_MAX_POINTS) { add(0.0) } } }
     val activityLog = remember { mutableStateListOf<String>() }
@@ -136,11 +142,34 @@ fun SylverOptimizerScreen(
             sessionFreedRamMb += result.freedRamMb
             lastActionBannerText = "✅ ${result.summaryMessage}"
             addLog(result.summaryMessage)
-            snapshot = monitorService.getMetricsSnapshot()
+            monitorService.invalidatePackageCache()
+            snapshot = monitorService.getMetricsSnapshotAsync()
             refreshProcessesList()
         } finally {
             isBusyOptimizing = false
         }
+    }
+
+    // Actualizar permisos y lista al regresar desde Ajustes del sistema (ON_RESUME)
+    DisposableEffect(lifecycle) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                val updatedAccess = monitorService.hasUsageStatsPermission()
+                if (updatedAccess != hasUsageAccess) {
+                    hasUsageAccess = updatedAccess
+                    addLog(
+                        if (updatedAccess) {
+                            "Permiso de Acceso a Uso concedido: Detección precisa de apps en 2º plano activada."
+                        } else {
+                            "Permiso de Acceso a Uso desactivado: Usando detección estándar."
+                        }
+                    )
+                    scope.launch { refreshProcessesList() }
+                }
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose { lifecycle.removeObserver(observer) }
     }
 
     // Inicialización al arrancar la aplicación
@@ -157,43 +186,45 @@ fun SylverOptimizerScreen(
         diskCacheSizeText = String.format(Locale.US, "%.2f MB", initialScan.totalSizeMb)
     }
 
-    // Bucle de telemetría en tiempo real
-    LaunchedEffect(currentSettings.telemetryIntervalMs) {
-        while (isActive) {
-            val snap = monitorService.getMetricsSnapshot()
-            snapshot = snap
+    // Bucle de telemetría en tiempo real (en Dispatchers.IO y pausado automáticamente en segundo plano)
+    LaunchedEffect(lifecycle, currentSettings.telemetryIntervalMs) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            while (isActive) {
+                val snap = monitorService.getMetricsSnapshotAsync()
+                snapshot = snap
 
-            if (ramHistory.size >= HISTORY_MAX_POINTS) ramHistory.removeAt(0)
-            ramHistory.add(snap.ramUsagePercent)
+                if (ramHistory.size >= HISTORY_MAX_POINTS) ramHistory.removeAt(0)
+                ramHistory.add(snap.ramUsagePercent)
 
-            if (cpuHistory.size >= HISTORY_MAX_POINTS) cpuHistory.removeAt(0)
-            cpuHistory.add(snap.cpuUsagePercent)
+                if (cpuHistory.size >= HISTORY_MAX_POINTS) cpuHistory.removeAt(0)
+                cpuHistory.add(snap.cpuUsagePercent)
 
-            tickCount++
-            if (tickCount % 4 == 0 && !isBusyOptimizing) {
-                refreshProcessesList()
-            }
+                tickCount++
+                if (tickCount % 4 == 0 && !isBusyOptimizing) {
+                    refreshProcessesList()
+                }
 
-            // Auto-optimización inteligente con enfriamiento de 60s
-            val nowMs = System.currentTimeMillis()
-            if (currentSettings.autoOptimizeEnabled &&
-                !isBusyOptimizing &&
-                snap.ramUsagePercent >= currentSettings.autoOptimizeThresholdPercent &&
-                (nowMs - lastAutoOptimizeMs) >= 60_000L
-            ) {
-                lastAutoOptimizeMs = nowMs
-                addLog(
-                    String.format(
-                        Locale.US,
-                        "[Auto-Optimización] Uso de RAM alto (%.1f%% >= %d%%). Liberando procesos en 2º plano...",
-                        snap.ramUsagePercent,
-                        currentSettings.autoOptimizeThresholdPercent
+                // Auto-optimización inteligente con enfriamiento de 60s
+                val nowMs = System.currentTimeMillis()
+                if (currentSettings.autoOptimizeEnabled &&
+                    !isBusyOptimizing &&
+                    snap.ramUsagePercent >= currentSettings.autoOptimizeThresholdPercent &&
+                    (nowMs - lastAutoOptimizeMs) >= 60_000L
+                ) {
+                    lastAutoOptimizeMs = nowMs
+                    addLog(
+                        String.format(
+                            Locale.US,
+                            "[Auto-Optimización] Uso de RAM alto (%.1f%% >= %d%%). Liberando procesos en 2º plano...",
+                            snap.ramUsagePercent,
+                            currentSettings.autoOptimizeThresholdPercent
+                        )
                     )
-                )
-                executeReleaseRam()
-            }
+                    executeReleaseRam()
+                }
 
-            delay(currentSettings.telemetryIntervalMs.toLong())
+                delay(currentSettings.telemetryIntervalMs.toLong())
+            }
         }
     }
 
@@ -209,6 +240,7 @@ fun SylverOptimizerScreen(
             .fillMaxSize()
             .background(activeTheme.windowBg)
             .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         // ================================================================
@@ -426,7 +458,8 @@ fun SylverOptimizerScreen(
                             sessionCleanedCacheMb += diskRes.freedDiskMb
                             addLog(diskRes.summaryMessage)
 
-                            snapshot = monitorService.getMetricsSnapshot()
+                            monitorService.invalidatePackageCache()
+                            snapshot = monitorService.getMetricsSnapshotAsync()
                             refreshProcessesList()
 
                             val postScan = optimizerService.scanSystemCacheAsync()
@@ -457,7 +490,8 @@ fun SylverOptimizerScreen(
                             sessionFreedRamMb += res.cachePurgedMb
                             lastActionBannerText = "✅ ${res.summaryMessage}"
                             addLog(res.summaryMessage)
-                            snapshot = monitorService.getMetricsSnapshot()
+                            monitorService.invalidatePackageCache()
+                            snapshot = monitorService.getMetricsSnapshotAsync()
                             refreshProcessesList()
                         } finally {
                             isBusyOptimizing = false
@@ -506,7 +540,8 @@ fun SylverOptimizerScreen(
                         }
                         lastActionBannerText = if (ok) "✅ $msg" else "ℹ️ $msg"
                         addLog(msg)
-                        snapshot = monitorService.getMetricsSnapshot()
+                        monitorService.invalidatePackageCache()
+                        snapshot = monitorService.getMetricsSnapshotAsync()
                         refreshProcessesList()
                     }
                 },

@@ -12,11 +12,32 @@ android {
         applicationId = "com.sylveroptimizer.android"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.1.0"
 
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    val keystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+    val keystorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+    val keyAliasEnv = System.getenv("ANDROID_KEY_ALIAS")
+    val keyPasswordEnv = System.getenv("ANDROID_KEY_PASSWORD")
+    val hasReleaseKeystore = !keystorePath.isNullOrBlank() &&
+        !keystorePassword.isNullOrBlank() &&
+        !keyAliasEnv.isNullOrBlank() &&
+        !keyPasswordEnv.isNullOrBlank() &&
+        file(keystorePath).exists()
+
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            create("release") {
+                storeFile = file(keystorePath!!)
+                storePassword = keystorePassword
+                keyAlias = keyAliasEnv
+                keyPassword = keyPasswordEnv
+            }
         }
     }
 
@@ -28,8 +49,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // Firma con debug key por defecto para facilitar instalación directa desde GitHub Releases
-            signingConfig = signingConfigs.getByName("debug")
+            // Usa Keystore de producción si está configurado en variables de entorno/Secrets, con respaldo a debug key
+            signingConfig = if (hasReleaseKeystore) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 

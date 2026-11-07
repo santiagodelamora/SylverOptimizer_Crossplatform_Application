@@ -42,7 +42,7 @@ Unlike legacy memory boosters that artificially exhausted memory to force paging
 ## 2. Installation & Execution Modes (Windows & Android)
 
 ### 🖥️ On Windows 10 / 11 (x64)
-1. **Windows Installer**: Download `SylverOptimizer_Setup_v1.0.0.exe` from *GitHub Releases* (or `windows/Installer/Output/`) to install the app with Start Menu and Desktop shortcuts.
+1. **Windows Installer**: Download `SylverOptimizer_Setup_v1.1.0.exe` from *GitHub Releases* (or `windows/Installer/Output/`) to install the app with Start Menu and Desktop shortcuts.
 2. **Portable Mode (No installation required)**: Run `windows/publish/SylverOptimizer.exe` directly (bundles the `.NET 10` runtime).
 3. **Quick Launch Script**: Double-click `windows/Ejecutar_SylverOptimizer.bat`.
 
@@ -56,7 +56,7 @@ Unlike legacy memory boosters that artificially exhausted memory to force paging
 | **Cleanup of `C:\Windows\Temp` and `C:\Windows\Prefetch`** | ⚠️ Partial | ✅ **Enabled** |
 
 ### 📱 On Android 8.0 or newer
-1. **Direct APK Installation**: Download `SylverOptimizer_Android_v1.0.0.apk` from *GitHub Releases* onto your Android phone or tablet and tap it to install (allow installation from your browser/file manager if prompted).
+1. **Direct APK Installation**: Download `SylverOptimizer_Android_v1.1.0.apk` from *GitHub Releases* onto your Android phone or tablet and tap it to install (allow installation from your browser/file manager if prompted).
 2. **From Android Studio**: Open the `android/` directory in Android Studio and press **Run (`▶`)** on a connected device or emulator.
 
 | Feature on Android | Standard Mode | With Usage Access (`🛡️`) |

@@ -9,7 +9,7 @@
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
     <AssemblyName>SylverOptimizer</AssemblyName>
     <Product>SylverOptimizer</Product>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Authors>Santiago De la Mora</Authors>
     <Description>Optimizador de RAM, Caché y Monitor de CPU para Windows 11</Description>
     <Copyright>Copyright (C) 2026 Santiago De la Mora</Copyright>

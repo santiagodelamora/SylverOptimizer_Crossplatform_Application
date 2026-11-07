@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   release-windows:
-    name: Build & Publish Windows Installer (.exe)
+    name: Build Windows Installer (.exe)
     runs-on: windows-latest
 
     steps:
@@ -44,15 +44,8 @@ jobs:
           name: SylverOptimizer-Windows-Installer
           path: windows/Installer/Output/*.exe
 
-      - name: Attach Windows Installer to GitHub Release / Publicar .exe en GitHub Releases
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: windows/Installer/Output/*.exe
-          generate_release_notes: true
-
   release-android:
-    name: Build & Publish Android App (.apk)
+    name: Build Android App (.apk)
     runs-on: ubuntu-latest
 
     steps:
@@ -70,11 +63,28 @@ jobs:
         with:
           gradle-version: '8.10.2'
 
+      - name: Prepare Release Keystore (Optional) / Preparar firma opcional
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/release-keystore.jks"
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release-keystore.jks" >> "$GITHUB_ENV"
+          fi
+
       - name: Build Release APK / Compilar APK en modo Release
         working-directory: android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
+          VERSION_TAG="${GITHUB_REF_NAME:-v1.1.0}"
+          if [[ "$VERSION_TAG" != v* ]]; then
+            VERSION_TAG="v1.1.0"
+          fi
           gradle assembleRelease
-          cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/SylverOptimizer_Android_v1.0.0.apk
+          cp app/build/outputs/apk/release/app-release.apk "app/build/outputs/apk/release/SylverOptimizer_Android_${VERSION_TAG}.apk"
 
       - name: Upload Android APK Artifact / Subir APK de Android
         uses: actions/upload-artifact@v4
@@ -82,9 +92,33 @@ jobs:
           name: SylverOptimizer-Android-APK
           path: android/app/build/outputs/apk/release/SylverOptimizer_Android_*.apk
 
-      - name: Attach Android APK to GitHub Release / Publicar .apk en GitHub Releases
-        if: startsWith(github.ref, 'refs/tags/v')
+  publish-release:
+    name: Publish GitHub Release (.exe & .apk)
+    needs:
+      - release-windows
+      - release-android
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Release Artifacts / Descargar instaladores compilados
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - name: Publish GitHub Release / Publicar en GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          files: android/app/build/outputs/apk/release/SylverOptimizer_Android_*.apk
+          name: "SylverOptimizer ${{ github.ref_name }} — Windows & Android"
+          files: |
+            release-assets/**/*.exe
+            release-assets/**/*.apk
           generate_release_notes: true
+          body: |
+            🇪🇸 **Lanzamiento oficial multiplataforma de SylverOptimizer (${{ github.ref_name }})**
+            - 🖥️ **Windows 10 / 11 (x64):** Instalador autocontenido `.exe` (no requiere instalar .NET por separado).
+            - 📱 **Android 8.0+ (API 26–35):** Aplicación nativa `.apk` escrita en Kotlin y Jetpack Compose.
+
+            🇺🇸 **Official cross-platform release of SylverOptimizer (${{ github.ref_name }})**
+            - 🖥️ **Windows 10 / 11 (x64):** Self-contained `.exe` installer (no separate .NET runtime required).
+            - 📱 **Android 8.0+ (API 26–35):** Native `.apk` application built with Kotlin and Jetpack Compose.

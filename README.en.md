@@ -9,9 +9,9 @@ A real-time hardware telemetry and optimization suite featuring **100% native ap
 
 You can download and install both versions directly from the official **GitHub Releases** page:
 
-- 🖥️ **Windows 10 / 11 (x64):** **[Download `SylverOptimizer_Setup_v1.0.0.exe` (Self-Contained Installer)](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/SylverOptimizer_Setup_v1.0.0.exe)**
-- 📱 **Android 8.0+ (Native APK):** **[Download `SylverOptimizer_Android_v1.0.0.apk`](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases/latest/download/SylverOptimizer_Android_v1.0.0.apk)**
-- 📋 **[View all versions on GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)**
+- 🖥️ **Windows 10 / 11 (x64):** **[Download `SylverOptimizer_Setup_v1.1.0.exe` (Self-Contained Installer)](https://github.com/santiagodelamora/SylverOptimizer_Crossplatform_Application/releases/latest/download/SylverOptimizer_Setup_v1.1.0.exe)**
+- 📱 **Android 8.0+ (Native APK):** **[Download `SylverOptimizer_Android_v1.1.0.apk`](https://github.com/santiagodelamora/SylverOptimizer_Crossplatform_Application/releases/latest/download/SylverOptimizer_Android_v1.1.0.apk)**
+- 📋 **[View all versions on GitHub Releases](https://github.com/santiagodelamora/SylverOptimizer_Crossplatform_Application/releases)**
 
 ## ✨ Key Features
 
@@ -60,7 +60,7 @@ gradle assembleRelease
 
 - `windows/` — Native Windows 10/11 desktop application (**C# / WPF / .NET 10**):
   - `windows/Assets/app.ico` — Custom Windows application and installer icon.
-  - `windows/Installer/SylverOptimizer.iss` — Inno Setup 6 installer script (distributed via [GitHub Releases](https://github.com/santiagodelamora/WinOptimizer_Desktop_Application/releases)).
+  - `windows/Installer/SylverOptimizer.iss` — Inno Setup 6 installer script (distributed via [GitHub Releases](https://github.com/santiagodelamora/SylverOptimizer_Crossplatform_Application/releases)).
   - `windows/Services/` — Native Windows services (`NativeMethods.cs`, `SystemMonitorService.cs`, `OptimizerService.cs`, `AppSettingsService.cs`).
   - `windows/MainWindow.xaml` / `windows/MainWindow.xaml.cs` — Themeable WPF GUI for Windows 10/11.
 - `android/` — Native Android application written in **Kotlin + Jetpack Compose**:
