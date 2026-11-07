@@ -16,22 +16,23 @@ You can download and install both versions directly from the official **GitHub R
 ## ✨ Key Features
 
 - **Zero-Overhead Real-Time Telemetry:**
-  - Dynamic circular gauges and 60-second area history charts for **Physical RAM** and **CPU**.
-  - Detailed memory breakdown: *In Use*, *Available*, *Cached / Standby List*, and *Committed (Pagefile)*.
-  - Low-level CPU metrics via `GetSystemTimes` (`kernel32.dll`): processor model name, logical cores, active processes, threads, and open handles.
-- **Safe RAM Working Set Release (`EmptyWorkingSet`):**
-  - Trims inactive pages from the *Working Set* of all accessible processes without affecting kernel-protected system processes.
-  - Supports 1-click global optimization or per-process memory trimming directly from the **Top Processes** table.
-- **Kernel RAM Cache / Standby List Purge (`NtSetSystemInformation`):**
-  - Flushes the *Modified Page List* and purges the *Standby List* on Windows 11 (automatically enabling `SeProfileSingleProcessPrivilege` when running as Administrator).
-- **System & Network Cache Cleaner:**
-  - Scans and removes orphaned temporary files across `%TEMP%`, `C:\Windows\Temp`, `C:\Windows\Prefetch`, and inactive Explorer thumbnail caches (`thumbcache_*.db`).
-  - Flushes the Windows DNS resolver cache (`ipconfig /flushdns`).
+  - Dynamic circular gauges and 60-second area history charts for **Physical RAM** and **CPU / SoC** across both platforms.
+  - **On Windows:** Detailed breakdown of *In Use*, *Available*, *Cached / Standby List*, and *Committed (Pagefile)*, plus CPU metrics via `GetSystemTimes` (`kernel32.dll`), active processes, threads, and handles.
+  - **On Android:** Native reading of `ActivityManager.MemoryInfo` and `/proc/meminfo` (*In Use*, *Available*, *Kernel Cache*, and *Swap / ZRAM*), real-time per-core CPU scaling frequencies, SoC model detection, and battery temperature (`BatteryManager`).
+- **Safe RAM & Background Process Optimization:**
+  - **On Windows (`EmptyWorkingSet`):** Trims inactive pages from process *Working Sets* without affecting kernel-protected system processes, globally or per process.
+  - **On Android (`killBackgroundProcesses`):** Stops inactive background processes and cached services globally or per app directly from the **Active Apps** list (with optional *Usage Access* `PACKAGE_USAGE_STATS` support).
+- **Memory Cache Purge:**
+  - **On Windows (`NtSetSystemInformation`):** Flushes the *Modified Page List* and purges the *Standby List* on Windows 11 when running as Administrator.
+  - **On Android:** Purges cached standby packages and reclaims inactive runtime memory.
+- **System Cache Cleaner:**
+  - **On Windows:** Scans and removes orphaned temporary files across `%TEMP%`, `C:\Windows\Temp`, `C:\Windows\Prefetch`, inactive Explorer thumbnail caches (`thumbcache_*.db`), and flushes DNS (`ipconfig /flushdns`).
+  - **On Android:** Scans and cleans temporary cache directories and residual `.tmp` / `.log` files.
 - **Smart Auto-Optimization:**
-  - Optional background toggle that automatically trims inactive RAM working sets when memory usage exceeds a configurable threshold (**65% – 95%**, **85%** by default).
-- **Settings Section & Customizable Color Themes:**
-  - Real-time visual theme switcher featuring **8 color palettes**: *Emerald Cyber*, *Arctic Ocean*, *Amethyst Neon*, *Crimson Gaming*, *Solar Amber*, *Crystal Light Mode*, *Dark Gray*, and *Light Gray*.
-  - Persistent preferences for telemetry refresh rate (`0.5s`, `1.0s`, `2.0s`), DNS flushing, and Standby List purging automatically saved in `%LocalAppData%\SylverOptimizer\settings.json`.
+  - Optional background toggle that automatically optimizes RAM when memory usage exceeds a configurable threshold (**65% – 95%**, **85%** by default) with a 60-second cooldown.
+- **Settings Section & 8 Customizable Color Themes:**
+  - Real-time visual theme switcher featuring **8 identical color palettes on Windows and Android**: *Emerald Cyber*, *Arctic Ocean*, *Amethyst Neon*, *Crimson Gaming*, *Solar Amber*, *Crystal Light Mode*, *Dark Gray*, and *Light Gray*.
+  - Persistent preferences for telemetry refresh rate (`0.5s`, `1.0s`, `2.0s`) automatically saved in `%LocalAppData%\SylverOptimizer\settings.json` (Windows) and `SharedPreferences` (Android).
 
 ## 🛠️ Building from Source
 

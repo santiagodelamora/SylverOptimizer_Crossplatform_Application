@@ -22,9 +22,10 @@ assignees: ''
 
 ## 💻 Entorno del Sistema / System Environment
 
-- **Versión de Windows / Windows Version:** (ej. Windows 11 24H2 / Windows 10 22H2)
+- **Plataforma / Platform:** [ ] 🖥️ Windows  |  [ ] 📱 Android
+- **Versión del Sistema / OS Version:** (ej. Windows 11 24H2 / Android 15)
 - **Versión de SylverOptimizer:** (ej. v1.0.0)
-- **Modo de ejecución / Execution Mode:** [ ] Administrador / Admin  |  [ ] Usuario estándar / Standard User
+- **Modo / Permisos / Execution Mode:** (ej. Admin / Usuario estándar en Windows • Acceso a Uso activo / Estándar en Android)
 - **Tema activo / Active Theme:** (ej. Esmeralda Cyber / Modo Claro Cristal)
 
 ## 📸 Capturas o Registro de Actividad / Screenshots or Activity Log

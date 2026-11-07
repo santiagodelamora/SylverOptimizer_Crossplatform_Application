@@ -16,22 +16,23 @@ Puedes descargar e instalar ambas versiones directamente desde la sección ofici
 ## ✨ Características Principales
 
 - **Monitoreo en Tiempo Real (Sin sobrecarga):**
-  - Medidores circulares dinámicos e historial gráfico de 60 segundos para **Memoria RAM** y **Procesador (CPU)**.
-  - Desglose detallado de RAM: *En Uso*, *Disponible*, *Caché / Standby List* y *Commit (Paginación)*.
-  - Métricas de CPU mediante `GetSystemTimes` (`kernel32.dll`): modelo del procesador, núcleos lógicos, procesos activos, hilos (*threads*) y *handles*.
-- **Liberación Segura de RAM (`EmptyWorkingSet`):**
-  - Recorta las páginas inactivas del *Working Set* de todos los procesos accesibles sin afectar procesos críticos protegidos por el kernel de Windows.
-  - Permite optimizar todos los procesos a la vez o liberar la RAM de un proceso individual desde la lista de **Top Procesos**.
-- **Purga de Caché de RAM / Standby List (`NtSetSystemInformation`):**
-  - Vacía la *Standby List* y la *Modified Page List* del kernel de Windows 11 (habilitando el privilegio `SeProfileSingleProcessPrivilege` cuando se ejecuta como Administrador).
-- **Limpiador de Caché del Sistema y Red:**
-  - Escanea y elimina archivos temporales huérfanos en `%TEMP%`, `C:\Windows\Temp`, `C:\Windows\Prefetch` y caché de miniaturas inactivas (`thumbcache_*.db`).
-  - Vacía la caché de resolución DNS (`ipconfig /flushdns`).
+  - Medidores circulares dinámicos e historial gráfico de 60 segundos para **Memoria RAM** y **Procesador (CPU / SoC)** en ambas plataformas.
+  - **En Windows:** Desglose de *En Uso*, *Disponible*, *Caché / Standby List* y *Commit (Paginación)*, más métricas de CPU vía `GetSystemTimes` (`kernel32.dll`), procesos, hilos y *handles*.
+  - **En Android:** Lectura nativa de `ActivityManager.MemoryInfo` y `/proc/meminfo` (*En Uso*, *Disponible*, *Caché Kernel* y *Swap / ZRAM*), frecuencias en vivo por núcleo de CPU, modelo del SoC y temperatura de batería (`BatteryManager`).
+- **Liberación Segura de RAM y Procesos en 2º Plano:**
+  - **En Windows (`EmptyWorkingSet`):** Recorta páginas inactivas del *Working Set* sin afectar procesos críticos protegidos por el kernel, globalmente o por proceso individual.
+  - **En Android (`killBackgroundProcesses`):** Detiene procesos inactivos y servicios en caché en segundo plano de forma global o por aplicación individual desde la lista de **Apps Activas** (con soporte opcional de permiso *Acceso a Uso* `PACKAGE_USAGE_STATS`).
+- **Purga de Caché de Memoria:**
+  - **En Windows (`NtSetSystemInformation`):** Vacía la *Standby List* y la *Modified Page List* del kernel de Windows 11 al ejecutarse como Administrador.
+  - **En Android:** Purga paquetes en espera (*Cached Background Apps*) y recolecta memoria inactiva del runtime.
+- **Limpiador de Caché del Sistema:**
+  - **En Windows:** Elimina archivos temporales huérfanos en `%TEMP%`, `C:\Windows\Temp`, `C:\Windows\Prefetch`, miniaturas inactivas (`thumbcache_*.db`) y vacía la caché DNS (`ipconfig /flushdns`).
+  - **En Android:** Escanea y limpia directorios de caché temporal y archivos residuales (`.tmp`, `.log`).
 - **Auto-Optimización Inteligente:**
-  - Modo opcional para liberar RAM automáticamente cuando el consumo supere el umbral configurable (**65% – 95%**, por defecto **85%**).
-- **Sección de Configuración y Temas de Color Personalizables:**
-  - Selector visual en tiempo real con **8 temas de color**: *Esmeralda Cyber*, *Océano Ártico*, *Amatista Neón*, *Carmesí Gaming*, *Solar Dorado*, *Modo Claro Cristal*, *Gris Oscuro* y *Gris Claro*.
-  - Ajustes persistentes de frecuencia de telemetría (`0.5s`, `1.0s`, `2.0s`), limpieza DNS y purga de Standby List guardados automáticamente en `%LocalAppData%\SylverOptimizer\settings.json`.
+  - Modo opcional para liberar RAM automáticamente cuando el consumo supere el umbral configurable (**65% – 95%**, por defecto **85%**) con enfriamiento de 60 segundos.
+- **Sección de Configuración y 8 Temas de Color Personalizables:**
+  - Selector visual en tiempo real con **8 temas idénticos en Windows y Android**: *Esmeralda Cyber*, *Océano Ártico*, *Amatista Neón*, *Carmesí Gaming*, *Solar Dorado*, *Modo Claro Cristal*, *Gris Oscuro* y *Gris Claro*.
+  - Ajustes persistentes de frecuencia de telemetría (`0.5s`, `1.0s`, `2.0s`) guardados automáticamente en `%LocalAppData%\SylverOptimizer\settings.json` (Windows) y `SharedPreferences` (Android).
 
 ## 🛠️ Compilación desde el Código Fuente
 
