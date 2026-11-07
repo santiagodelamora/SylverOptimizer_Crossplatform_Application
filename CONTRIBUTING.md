@@ -55,26 +55,31 @@ ES: Agrega las opciones de intervalo de telemetría de 0.5s, 1.0s y 2.0s en el p
 
 ### 3. Requisitos del Entorno de Desarrollo
 
+**Para la versión de Windows (`windows/`):**
 - **Sistema Operativo:** Windows 10 o Windows 11 (x64).
 - **SDK:** [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (`net10.0-windows` con soporte para WPF).
 - **IDE recomendado:** Visual Studio 2022/2026, JetBrains Rider o VS Code (con extensión C# Dev Kit).
 - **Opcional (para generar instalador):** [Inno Setup 6](https://jrsoftware.org/isinfo.php) para compilar `windows/Installer/SylverOptimizer.iss`.
 
+**Para la versión de Android (`android/`):**
+- **JDK:** Java 17 o superior.
+- **SDK:** Android SDK Platform 35 (`minSdk = 26`, `targetSdk = 35`) y Gradle 8.10.2.
+- **IDE recomendado:** Android Studio Ladybug o superior (Kotlin 2.0 + Jetpack Compose).
+
 ### 4. Compilación y Pruebas Locales
 
-Antes de abrir un Pull Request, verifica que el proyecto compile sin errores ni advertencias en modo `Release`:
+Antes de abrir un Pull Request, verifica que la plataforma modificada compile sin errores en modo `Release`:
 
 ```powershell
+# 🖥️ Compilar y probar versión Windows
 cd windows
-
-# Restaurar dependencias
 dotnet restore
-
-# Compilar en modo Release
 dotnet build SylverOptimizer.csproj --configuration Release
-
-# Ejecutar la aplicación
 dotnet run --configuration Release
+
+# 📱 Compilar APK versión Android
+cd ../android
+gradle assembleRelease
 ```
 
 ### 5. Estándares de Código y Diseño
@@ -129,26 +134,31 @@ ES: <Detailed explanation in Spanish of what changed and why.>
 
 ### 3. Development Environment Requirements
 
+**For the Windows Desktop version (`windows/`):**
 - **Operating System:** Windows 10 or Windows 11 (x64).
 - **SDK:** [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (`net10.0-windows` with WPF workload).
 - **Recommended IDE:** Visual Studio 2022/2026, JetBrains Rider, or VS Code (with C# Dev Kit).
 - **Optional (for building the installer):** [Inno Setup 6](https://jrsoftware.org/isinfo.php) to compile `windows/Installer/SylverOptimizer.iss`.
 
+**For the Android Mobile version (`android/`):**
+- **JDK:** Java 17 or newer.
+- **SDK:** Android SDK Platform 35 (`minSdk = 26`, `targetSdk = 35`) and Gradle 8.10.2.
+- **Recommended IDE:** Android Studio Ladybug or newer (Kotlin 2.0 + Jetpack Compose).
+
 ### 4. Building & Testing Locally
 
-Before submitting a Pull Request, ensure the application builds cleanly in `Release` configuration:
+Before submitting a Pull Request, ensure the modified target builds cleanly in `Release` configuration:
 
 ```powershell
+# 🖥️ Build & run Windows Desktop version
 cd windows
-
-# Restore dependencies
 dotnet restore
-
-# Build in Release mode
 dotnet build SylverOptimizer.csproj --configuration Release
-
-# Run the application
 dotnet run --configuration Release
+
+# 📱 Build Android Release APK
+cd ../android
+gradle assembleRelease
 ```
 
 ### 5. Coding & UI Standards

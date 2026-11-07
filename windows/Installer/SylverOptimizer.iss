@@ -1,7 +1,7 @@
 #define MyAppName "SylverOptimizer"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.1.0"
 #define MyAppPublisher "Santiago De la Mora"
-#define MyAppURL "https://github.com/santiagodelamora/WinOptimizer_Desktop_Application"
+#define MyAppURL "https://github.com/santiagodelamora/SylverOptimizer_Crossplatform_Application"
 #define MyAppExeName "SylverOptimizer.exe"
 
 [Setup]

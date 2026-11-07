@@ -1,5 +1,6 @@
 package com.sylveroptimizer.android
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,12 +24,17 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SylverOptimizerScreen(
+                lifecycle = lifecycle,
                 settingsService = settingsService,
                 monitorService = monitorService,
                 optimizerService = optimizerService,
                 onThemeChanged = { theme ->
-                    window.statusBarColor = theme.windowBg.toArgb()
-                    window.navigationBarColor = theme.windowBg.toArgb()
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                        @Suppress("DEPRECATION")
+                        window.statusBarColor = theme.windowBg.toArgb()
+                        @Suppress("DEPRECATION")
+                        window.navigationBarColor = theme.windowBg.toArgb()
+                    }
                     val isLightTheme = theme.id.equals("NordicLight", ignoreCase = true) ||
                         theme.id.equals("LightGray", ignoreCase = true)
                     val controller = WindowCompat.getInsetsController(window, window.decorView)

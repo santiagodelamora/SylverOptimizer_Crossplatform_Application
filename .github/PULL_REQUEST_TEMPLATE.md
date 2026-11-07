@@ -23,7 +23,7 @@
 
 - [ ] 🌿 Mi Pull Request apunta a la rama **`desarrollo`** (no a `estable`) / My PR targets the **`desarrollo`** branch (not `estable`).
 - [ ] 🌐 Mis mensajes de commit son **bilingües (Inglés y Español)** siguiendo [`CONTRIBUTING.md`](../CONTRIBUTING.md) / My commit messages are **bilingual (EN & ES)**.
-- [ ] 🛠️ El proyecto compila sin errores con `dotnet build --configuration Release` / The project builds cleanly in `Release` mode.
+- [ ] 🛠️ El proyecto compila sin errores (`dotnet build --configuration Release` en `windows/` y/o `gradle assembleRelease` en `android/`) / The project builds cleanly in `Release` mode.
 - [ ] 🎨 Si modifiqué [`windows/MainWindow.xaml`](../windows/MainWindow.xaml) o [`android/`](../android), verifiqué que se vea bien en los **8 temas de color** (incluyendo *Modo Claro Cristal*) / UI changes work across all **8 color themes**.
 - [ ] 📚 Actualicé la documentación en español e inglés si aplica / Updated Spanish & English docs if applicable.
 
