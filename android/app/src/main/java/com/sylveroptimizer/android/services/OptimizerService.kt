@@ -17,7 +17,8 @@ data class RamOptimizationResult(
     val processesSkipped: Int,
     val freedRamMb: Double,
     val cachePurgedMb: Double,
-    val summaryMessage: String
+    val summaryMessage: String,
+    val optimizedPackages: List<String> = emptyList()
 )
 
 data class DiskCacheScanResult(
@@ -53,11 +54,12 @@ class OptimizerService(private val context: Context) {
         val availBefore = getAvailableMemoryBytes()
         var trimmedCount = 0
         var skippedCount = 0
+        val trimmedPackages = mutableListOf<String>()
         val ownPackage = context.packageName
 
         try {
             val pm = context.packageManager
-            val installed = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+            val installed = pm.getInstalledApplications(0)
 
             for (app in installed) {
                 if (app.packageName == ownPackage) {
@@ -77,6 +79,7 @@ class OptimizerService(private val context: Context) {
                     try {
                         activityManager.killBackgroundProcesses(app.packageName)
                         trimmedCount++
+                        trimmedPackages.add(app.packageName)
                     } catch (_: Exception) {
                         skippedCount++
                     }
@@ -111,7 +114,8 @@ class OptimizerService(private val context: Context) {
             processesSkipped = skippedCount,
             freedRamMb = effectiveFreedMb,
             cachePurgedMb = 0.0,
-            summaryMessage = summary
+            summaryMessage = summary,
+            optimizedPackages = trimmedPackages
         )
     }
 
@@ -121,6 +125,7 @@ class OptimizerService(private val context: Context) {
     suspend fun purgeRamStandbyCacheAsync(): RamOptimizationResult = withContext(Dispatchers.IO) {
         val availBefore = getAvailableMemoryBytes()
         var purgedPackages = 0
+        val purgedList = mutableListOf<String>()
         val ownPackage = context.packageName
 
         try {
@@ -134,6 +139,7 @@ class OptimizerService(private val context: Context) {
                     try {
                         activityManager.killBackgroundProcesses(app.packageName)
                         purgedPackages++
+                        purgedList.add(app.packageName)
                     } catch (_: Exception) {
                     }
                 }
@@ -168,7 +174,8 @@ class OptimizerService(private val context: Context) {
             processesSkipped = 0,
             freedRamMb = deltaMb,
             cachePurgedMb = reportedMb,
-            summaryMessage = msg
+            summaryMessage = msg,
+            optimizedPackages = purgedList
         )
     }
 

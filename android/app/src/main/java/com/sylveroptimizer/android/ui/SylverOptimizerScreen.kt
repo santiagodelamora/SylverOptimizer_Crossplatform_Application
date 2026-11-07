@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -139,10 +142,10 @@ fun SylverOptimizerScreen(
         isBusyOptimizing = true
         try {
             val result = optimizerService.releaseRamWorkingSetsAsync()
+            monitorService.markPackagesOptimized(result.optimizedPackages)
             sessionFreedRamMb += result.freedRamMb
             lastActionBannerText = "✅ ${result.summaryMessage}"
             addLog(result.summaryMessage)
-            monitorService.invalidatePackageCache()
             snapshot = monitorService.getMetricsSnapshotAsync()
             refreshProcessesList()
         } finally {
@@ -150,7 +153,7 @@ fun SylverOptimizerScreen(
         }
     }
 
-    // Actualizar permisos y lista al regresar desde Ajustes del sistema (ON_RESUME)
+    // Actualizar permisos y lista al regresar a la aplicación (ON_RESUME)
     DisposableEffect(lifecycle) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
@@ -164,8 +167,8 @@ fun SylverOptimizerScreen(
                             "Permiso de Acceso a Uso desactivado: Usando detección estándar."
                         }
                     )
-                    scope.launch { refreshProcessesList() }
                 }
+                scope.launch { refreshProcessesList() }
             }
         }
         lifecycle.addObserver(observer)
@@ -443,12 +446,14 @@ fun SylverOptimizerScreen(
                             addLog("=== Iniciando Optimización Integral 1-Clic ===")
 
                             val ramRes = optimizerService.releaseRamWorkingSetsAsync()
+                            monitorService.markPackagesOptimized(ramRes.optimizedPackages)
                             sessionFreedRamMb += ramRes.freedRamMb
                             addLog(ramRes.summaryMessage)
 
                             var standbyMb = 0.0
                             if (currentSettings.purgeCachedAppsOnOneClick) {
                                 val standbyRes = optimizerService.purgeRamStandbyCacheAsync()
+                                monitorService.markPackagesOptimized(standbyRes.optimizedPackages)
                                 standbyMb = standbyRes.cachePurgedMb
                                 sessionFreedRamMb += standbyRes.freedRamMb
                                 addLog(standbyRes.summaryMessage)
@@ -487,10 +492,10 @@ fun SylverOptimizerScreen(
                         isBusyOptimizing = true
                         try {
                             val res = optimizerService.purgeRamStandbyCacheAsync()
+                            monitorService.markPackagesOptimized(res.optimizedPackages)
                             sessionFreedRamMb += res.cachePurgedMb
                             lastActionBannerText = "✅ ${res.summaryMessage}"
                             addLog(res.summaryMessage)
-                            monitorService.invalidatePackageCache()
                             snapshot = monitorService.getMetricsSnapshotAsync()
                             refreshProcessesList()
                         } finally {
@@ -535,12 +540,15 @@ fun SylverOptimizerScreen(
                         val (ok, freedMb, msg) = withContext(Dispatchers.IO) {
                             optimizerService.trimSingleProcess(item.packageName, item.appName, item.estimatedMb)
                         }
-                        if (ok && freedMb > 0) {
-                            sessionFreedRamMb += freedMb
+                        if (ok) {
+                            monitorService.markPackageOptimized(item.packageName)
+                            topProcesses.removeAll { it.packageName == item.packageName }
+                            if (freedMb > 0) {
+                                sessionFreedRamMb += freedMb
+                            }
                         }
                         lastActionBannerText = if (ok) "✅ $msg" else "ℹ️ $msg"
                         addLog(msg)
-                        monitorService.invalidatePackageCache()
                         snapshot = monitorService.getMetricsSnapshotAsync()
                         refreshProcessesList()
                     }
@@ -1151,8 +1159,9 @@ private fun DashboardContent(
                 OutlinedButton(
                     onClick = onRefreshProcesses,
                     enabled = !isBusyOptimizing,
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
-                    shape = RoundedCornerShape(7.dp),
+                    modifier = Modifier.heightIn(min = 48.dp),
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp),
+                    shape = RoundedCornerShape(8.dp),
                     border = BorderStroke(1.dp, theme.secondaryButtonBorder),
                     colors = ButtonDefaults.outlinedButtonColors(
                         containerColor = theme.secondaryButtonBg,
@@ -1161,13 +1170,13 @@ private fun DashboardContent(
                 ) {
                     Text(
                         text = "🔄 Actualizar",
-                        fontSize = 11.sp,
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             if (topProcesses.isEmpty()) {
                 Text(
@@ -1177,60 +1186,71 @@ private fun DashboardContent(
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             } else {
-                Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     topProcesses.forEach { proc ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(theme.subCardBg)
-                                .border(1.dp, theme.subCardBorder, RoundedCornerShape(8.dp))
-                                .padding(horizontal = 10.dp, vertical = 7.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = proc.appName,
-                                    color = theme.textPrimary,
-                                    fontSize = 12.5.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = proc.packageName,
-                                    color = theme.textMuted,
-                                    fontSize = 10.sp,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            Text(
-                                text = proc.formattedRam,
-                                color = theme.accentPrimary,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Spacer(modifier = Modifier.width(10.dp))
-
-                            Box(
+                        key(proc.packageName) {
+                            Row(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(6.dp))
-                                    .background(theme.secondaryButtonBg)
-                                    .border(1.dp, theme.secondaryButtonBorder, RoundedCornerShape(6.dp))
-                                    .clickable { onTrimSingleProcess(proc) }
-                                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                                    .fillMaxWidth()
+                                    .heightIn(min = 68.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(theme.subCardBg)
+                                    .border(1.dp, theme.subCardBorder, RoundedCornerShape(10.dp))
+                                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    verticalArrangement = Arrangement.spacedBy(3.dp)
+                                ) {
+                                    Text(
+                                        text = proc.appName,
+                                        color = theme.textPrimary,
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = proc.packageName,
+                                        color = theme.textMuted,
+                                        fontSize = 11.5.sp,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(10.dp))
+
                                 Text(
-                                    text = "Liberar",
-                                    color = theme.textPrimary,
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    text = proc.formattedRam,
+                                    color = theme.accentPrimary,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold
                                 )
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                OutlinedButton(
+                                    onClick = { onTrimSingleProcess(proc) },
+                                    enabled = !isBusyOptimizing,
+                                    modifier = Modifier
+                                        .heightIn(min = 48.dp)
+                                        .widthIn(min = 88.dp),
+                                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                                    shape = RoundedCornerShape(8.dp),
+                                    border = BorderStroke(1.dp, theme.secondaryButtonBorder),
+                                    colors = ButtonDefaults.outlinedButtonColors(
+                                        containerColor = theme.secondaryButtonBg,
+                                        contentColor = theme.textPrimary
+                                    )
+                                ) {
+                                    Text(
+                                        text = "Liberar",
+                                        fontSize = 12.5.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
                             }
                         }
                     }

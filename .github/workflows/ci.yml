@@ -51,7 +51,28 @@ jobs:
         with:
           gradle-version: '8.10.2'
 
+      - name: Prepare Release Keystore (Optional) / Preparar firma opcional
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/release-keystore.jks"
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release-keystore.jks" >> "$GITHUB_ENV"
+          fi
+
       - name: Build Release APK / Compilar APK en modo Release
         working-directory: android
-        run: gradle assembleRelease
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          gradle assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk "app/build/outputs/apk/release/SylverOptimizer_Android_preview_${GITHUB_SHA::7}.apk"
+
+      - name: Upload Android Preview APK / Subir APK de prueba
+        uses: actions/upload-artifact@v4
+        with:
+          name: SylverOptimizer-Android-Preview-APK
+          path: android/app/build/outputs/apk/release/SylverOptimizer_Android_preview_*.apk
 

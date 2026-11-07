@@ -2,6 +2,7 @@ package com.sylveroptimizer.android.services
 
 import android.app.ActivityManager
 import android.app.AppOpsManager
+import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 
 data class SystemMetricsSnapshot(
@@ -55,9 +57,44 @@ class SystemMonitorService(private val context: Context) {
     private var cachedActivePackageCount: Int = 24
     @Volatile
     private var lastPackageCountTimeMs: Long = 0L
+    private val optimizedPackages = ConcurrentHashMap<String, Long>()
 
     fun invalidatePackageCache() {
         lastPackageCountTimeMs = 0L
+    }
+
+    fun markPackageOptimized(packageName: String) {
+        optimizedPackages[packageName] = System.currentTimeMillis()
+        invalidatePackageCache()
+    }
+
+    fun markPackagesOptimized(packageNames: Collection<String>) {
+        val now = System.currentTimeMillis()
+        for (pkg in packageNames) {
+            optimizedPackages[pkg] = now
+        }
+        invalidatePackageCache()
+    }
+
+    private fun isPackageStillOptimized(
+        packageName: String,
+        lastUsedMs: Long?,
+        hasUsageAccess: Boolean,
+        nowMs: Long
+    ): Boolean {
+        val optimizedAt = optimizedPackages[packageName] ?: return false
+        if (hasUsageAccess) {
+            if (lastUsedMs != null && lastUsedMs > optimizedAt + 1_500L) {
+                optimizedPackages.remove(packageName)
+                return false
+            }
+            return true
+        }
+        if (nowMs - optimizedAt > OPTIMIZED_COOLDOWN_MS) {
+            optimizedPackages.remove(packageName)
+            return false
+        }
+        return true
     }
 
     fun createInitialSnapshot(): SystemMetricsSnapshot {
@@ -317,8 +354,9 @@ class SystemMonitorService(private val context: Context) {
             val apps = pm.getInstalledApplications(0)
             val count = apps.count { app ->
                 (app.flags and ApplicationInfo.FLAG_STOPPED) == 0 &&
-                    app.packageName != context.packageName
-            }.coerceAtLeast(1)
+                    app.packageName != context.packageName &&
+                    !optimizedPackages.containsKey(app.packageName)
+            }.coerceAtLeast(0)
             cachedActivePackageCount = count
             lastPackageCountTimeMs = now
             count
@@ -329,18 +367,20 @@ class SystemMonitorService(private val context: Context) {
 
     /**
      * Obtiene las aplicaciones activas / en caché con mayor impacto en memoria.
-     * Utiliza UsageStatsManager si el permiso está activo, o la lista de paquetes activos no detenidos.
+     * Utiliza UsageStatsManager si el permiso está activo, o la lista de paquetes activos no detenidos,
+     * excluyendo las aplicaciones cuya memoria RAM en 2º plano ya fue liberada.
      */
     fun getTopRamProcesses(limit: Int = 12): List<ProcessMemoryItem> {
         val pm = context.packageManager
         val ownPkg = context.packageName
         val results = mutableListOf<ProcessMemoryItem>()
+        val now = System.currentTimeMillis()
+        val hasUsage = hasUsageStatsPermission()
 
         try {
             val recentPackages = mutableMapOf<String, Long>()
-            if (hasUsageStatsPermission()) {
+            if (hasUsage) {
                 val usm = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-                val now = System.currentTimeMillis()
                 val stats = usm.queryUsageStats(
                     UsageStatsManager.INTERVAL_DAILY,
                     now - 1000L * 60L * 60L * 12L,
@@ -354,14 +394,39 @@ class SystemMonitorService(private val context: Context) {
                         )
                     }
                 }
+
+                // Consultar eventos recientes con precisión de milisegundos para detectar reapertura tras liberar RAM
+                val earliestOptimized = optimizedPackages.values.minOrNull()
+                if (earliestOptimized != null) {
+                    val events = usm.queryEvents(earliestOptimized, now)
+                    val event = UsageEvents.Event()
+                    while (events != null && events.hasNextEvent()) {
+                        events.getNextEvent(event)
+                        val pkg = event.packageName
+                        if (pkg != null &&
+                            pkg != ownPkg &&
+                            event.eventType == UsageEvents.Event.ACTIVITY_RESUMED
+                        ) {
+                            recentPackages[pkg] = max(recentPackages[pkg] ?: 0L, event.timeStamp)
+                        }
+                    }
+                }
             }
 
-            val installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+            val installedApps = pm.getInstalledApplications(0)
             val activeCandidates = installedApps.filter { app ->
-                app.packageName != ownPkg &&
-                    (app.flags and ApplicationInfo.FLAG_STOPPED) == 0 &&
-                    (recentPackages.containsKey(app.packageName) ||
-                        (app.flags and ApplicationInfo.FLAG_SYSTEM) == 0)
+                if (app.packageName == ownPkg || (app.flags and ApplicationInfo.FLAG_STOPPED) != 0) {
+                    false
+                } else {
+                    val lastUsed = recentPackages[app.packageName]
+                    if (isPackageStillOptimized(app.packageName, lastUsed, hasUsage, now)) {
+                        false
+                    } else if (hasUsage && recentPackages.isNotEmpty()) {
+                        recentPackages.containsKey(app.packageName)
+                    } else {
+                        (app.flags and ApplicationInfo.FLAG_SYSTEM) == 0
+                    }
+                }
             }
 
             for (app in activeCandidates) {
@@ -405,6 +470,10 @@ class SystemMonitorService(private val context: Context) {
                     .thenByDescending { it.estimatedMb }
             )
             .take(limit)
+    }
+
+    companion object {
+        private const val OPTIMIZED_COOLDOWN_MS = 15L * 60L * 1000L
     }
 }
 
